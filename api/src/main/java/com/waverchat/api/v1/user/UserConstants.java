@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.User;
+package com.waverchat.api.v1.user;
 
 public class UserConstants {
 
@@ -9,6 +9,10 @@ public class UserConstants {
     public static final int MAX_FIRST_NAME_LENGTH = 35;
 
     public static final int MAX_LAST_NAME_LENGTH = 35;
+
+    public static final int MIN_PASSWORD_LENGTH = 6;
+
+    public static final int MAX_PASSWORD_LENGTH = 500;
 
     private UserConstants() {}
 
