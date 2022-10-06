@@ -13,7 +13,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "user_creation_confirmations")
+@Table(
+        name = "user_creation_confirmations",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
