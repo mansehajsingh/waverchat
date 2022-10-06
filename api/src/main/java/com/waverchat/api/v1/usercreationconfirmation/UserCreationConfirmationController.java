@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/userCreationConfirmation")
+@RequestMapping("/api/v1/user-creation-confirmation")
 public class UserCreationConfirmationController {
 
     @Autowired
