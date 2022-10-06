@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.UserCreationConfirmation;
+package com.waverchat.api.v1.usercreationconfirmation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
