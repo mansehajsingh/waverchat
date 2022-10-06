@@ -15,4 +15,5 @@ public interface UserCreationConfirmationRepository extends JpaRepository<UserCr
 
     boolean existsByEmail(String email);
 
+    void deleteById(UUID uuid);
 }
