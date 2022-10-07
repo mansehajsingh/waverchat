@@ -1,19 +1,20 @@
 package com.waverchat.api.v1.usercreationconfirmation;
 
 import com.waverchat.api.v1.exceptions.ConflictException;
+import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.http.response.MessageResponse;
+import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.usercreationconfirmation.UserCreationConfirmation;
 import com.waverchat.api.v1.usercreationconfirmation.UserCreationConfirmationService;
 import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationRequest;
+import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/user-creation-confirmation")
@@ -37,7 +38,7 @@ public class UserCreationConfirmationController {
         );
 
         try {
-            userCreationConfirmationService.create(userCreationConfirmation);
+            this.userCreationConfirmationService.create(userCreationConfirmation);
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
         }
@@ -49,6 +50,33 @@ public class UserCreationConfirmationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new MessageResponse("Created UserCreationConfirmation successfully.")
         );
+    }
+
+    @DeleteMapping("/{idAsString}")
+    public ResponseEntity<?> confirmUser(@PathVariable String idAsString) {
+        UUID id;
+
+        try {
+            id = UUID.fromString(idAsString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MessageResponse("Incorrect UUID format"));
+        }
+
+        User createdUser;
+
+        try {
+            createdUser = this.userCreationConfirmationService.deleteUponConfirmation(id);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(e.getMessage()));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new UserCreationConfirmationResponse(
+                createdUser.getId(),
+                createdUser.getEmail(),
+                createdUser.getUsername(),
+                createdUser.getFirstName(),
+                createdUser.getLastName()
+        ));
     }
 
 }
