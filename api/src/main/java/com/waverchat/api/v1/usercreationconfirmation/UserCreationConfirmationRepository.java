@@ -11,7 +11,7 @@ public interface UserCreationConfirmationRepository extends JpaRepository<UserCr
 
     Optional<UserCreationConfirmation> findById(UUID uuid);
 
-    boolean existsByUsername(String username);
+    boolean existsByUsernameIgnoreCase(String username);
 
     boolean existsByEmail(String email);
 

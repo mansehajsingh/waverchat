@@ -25,19 +25,19 @@ public class UserCreationConfirmationService {
     {
         // if a user is already registered with the desired username we can't allow a new
         // user registry with that username
-        if (this.userRepository.existsByUsername(userCreationConfirmation.getUsername())) {
+        if (this.userRepository.existsByUsernameIgnoreCase(userCreationConfirmation.getUsername())) {
             throw new ConflictException("Username is already in use.");
         }
 
         // if a user is already registered with the desired email we cannot allow a new
         // account creation with the same email
-        if (this.userRepository.existsByEmail(userCreationConfirmation.getEmail())) {
+        if (this.userRepository.existsByEmailIgnoreCase(userCreationConfirmation.getEmail())) {
             throw new ConflictException("A user already exists with this email.");
         }
 
         // if we have a user that has not confirmed their account yet with the desired username,
         // we cannot allow a new unconfirmed user creation with the same username
-        if (this.userCreationConfirmationRepository.existsByUsername(userCreationConfirmation.getUsername())) {
+        if (this.userCreationConfirmationRepository.existsByUsernameIgnoreCase(userCreationConfirmation.getUsername())) {
             throw new ConflictException("A user already exists with this username.");
         }
 
