@@ -2,6 +2,7 @@ package com.waverchat.api.v1.user;
 
 import com.waverchat.api.v1.ApplicationEntity;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotNull;
                 @UniqueConstraint(columnNames = "email")
         }
 )
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends ApplicationEntity {
