@@ -1,17 +1,22 @@
 package com.waverchat.api.v1.user;
 
 import com.waverchat.api.v1.ApplicationEntity;
+import com.waverchat.api.v1.authentication.session.Session;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -51,5 +56,10 @@ public class User extends ApplicationEntity {
 
     @NotNull
     private boolean deleted = false;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Session> sessions = new HashSet<>();
+
+    public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {}
 
 }
