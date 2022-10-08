@@ -42,4 +42,28 @@ public class AuthUtils {
 
         return accessToken;
     }
+
+    public static String issueRefreshToken(UUID sessionId) {
+        // Setting age of refresh token
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.MONTH, SessionConstants.REFRESH_TOKEN_MAX_AGE_MONTHS);
+        Date expiry = calendar.getTime();
+
+        // fetching the key from the environment variables
+        byte[] decodedKey = Base64.getDecoder()
+                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+        Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
+
+        String refreshToken = Jwts.builder()
+                .setId(sessionId.toString())
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key)
+                .compact();
+
+        return refreshToken;
+    }
+
 }

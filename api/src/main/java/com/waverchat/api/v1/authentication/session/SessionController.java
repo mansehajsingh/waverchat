@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.authentication.session;
 
+import com.waverchat.api.v1.EnvironmentVariables;
 import com.waverchat.api.v1.authentication.AuthUtils;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationResponse;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -30,7 +33,8 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity<?> create(
-            @Valid @RequestBody SessionCreationRequest sessionCreationRequest
+            @Valid @RequestBody SessionCreationRequest sessionCreationRequest,
+            HttpServletResponse response
     ) {
 
         User user;
@@ -53,6 +57,13 @@ public class SessionController {
         session = sessionService.createSession(session);
 
         String accessToken = AuthUtils.issueAccessToken(session.getId(), user.getId());
+        String refreshToken = AuthUtils.issueRefreshToken(session.getId());
+
+        Cookie cookie = new Cookie("waverchat_session", refreshToken);
+        cookie.setSecure(Boolean.parseBoolean(EnvironmentVariables.get("useHttps")));
+        cookie.setHttpOnly(true);
+
+        response.addCookie(cookie);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new SessionCreationResponse(accessToken));
     }
