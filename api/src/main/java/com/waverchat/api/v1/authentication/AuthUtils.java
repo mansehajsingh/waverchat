@@ -1,0 +1,45 @@
+package com.waverchat.api.v1.authentication;
+
+import com.waverchat.api.v1.EnvironmentVariables;
+import com.waverchat.api.v1.authentication.session.SessionConstants;
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvEntry;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
+
+public class AuthUtils {
+
+    private AuthUtils() {}
+
+    public static String issueAccessToken(UUID sessionId, UUID userId) {
+        // Setting age of access token to be 10 hours
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.HOUR_OF_DAY, SessionConstants.ACCESS_TOKEN_MAX_AGE_HOURS);
+        Date expiry = calendar.getTime();
+
+        // fetching the key from the environment variables
+        byte[] decodedKey = Base64.getDecoder()
+                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+        Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
+
+        // creating the access token
+        String accessToken = Jwts.builder()
+                .setId(sessionId.toString())
+                .setSubject(userId.toString())
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key)
+                .compact();
+
+        return accessToken;
+    }
+}
