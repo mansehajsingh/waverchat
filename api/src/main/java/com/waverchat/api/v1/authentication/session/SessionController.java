@@ -62,6 +62,8 @@ public class SessionController {
         Cookie cookie = new Cookie("waverchat_session", refreshToken);
         cookie.setSecure(Boolean.parseBoolean(EnvironmentVariables.get("useHttps")));
         cookie.setHttpOnly(true);
+        cookie.setPath("/api/v1/sessions/refresh");
+        cookie.setMaxAge(60 * 60 * 24 * 365 * 10); // 10 years
 
         response.addCookie(cookie);
 
