@@ -3,12 +3,10 @@ package com.waverchat.api.v1.authentication;
 
 import com.waverchat.api.v1.EnvironmentVariables;
 import com.waverchat.api.v1.authentication.session.SessionConstants;
-import com.waverchat.api.v1.components.RequestingUser;
 import com.waverchat.api.v1.util.AuthenticatedEndpoint;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,13 +21,6 @@ import java.util.UUID;
 
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
-
-    private RequestingUser requestingUser;
-
-    @Autowired
-    AuthenticationInterceptor(RequestingUser requestingUser) {
-        this.requestingUser = requestingUser;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -70,7 +61,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
-                this.requestingUser.setId(UUID.fromString(claims.getSubject()));
+                request.setAttribute("requestingUser", UUID.fromString(claims.getId()));
                 return true;
             }
         }
