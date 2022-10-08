@@ -11,8 +11,7 @@ public class SessionService {
     private SessionRepository sessionRepository;
 
     public Session createSession(Session session) {
-        Session createdSession = sessionRepository.save(session);
-        return createdSession;
+        return sessionRepository.save(session);
     }
 
 }
