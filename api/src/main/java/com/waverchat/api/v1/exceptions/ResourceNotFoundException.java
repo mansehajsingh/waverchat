@@ -8,4 +8,6 @@ public class ResourceNotFoundException extends Exception {
         super(resourceName + " with id " + id.toString() + " does not exist or could not be found.");
     }
 
+    public ResourceNotFoundException (String message) { super(message); }
+
 }
