@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/user-creation-confirmation")
+@RequestMapping("/api/v1/user-creation-confirmations")
 public class UserCreationConfirmationController {
 
     @Autowired
