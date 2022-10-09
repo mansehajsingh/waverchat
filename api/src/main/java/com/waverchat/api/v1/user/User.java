@@ -60,6 +60,14 @@ public class User extends ApplicationEntity {
     @OneToMany(mappedBy = "user")
     private Set<Session> sessions = new HashSet<>();
 
-    public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {}
+    public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setPasswordHash(passwordHash);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setSuperUser(superUser);
+        this.setDeleted(deleted);
+    }
 
 }

@@ -75,10 +75,10 @@ public class UserCreationConfirmationService {
                     toDelete.isSuperUser(),
                     toDelete.isDeleted()
             );
-            // delete the confirmation
-            this.userCreationConfirmationRepository.deleteById(id);
             // persist the user as a permanent user in the database
             this.userRepository.save(userToCreate);
+            // delete the confirmation
+            this.userCreationConfirmationRepository.deleteById(id);
             return userToCreate;
         } else {
             throw new ResourceNotFoundException("UserCreationConfirmation", id);
