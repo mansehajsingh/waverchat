@@ -69,7 +69,7 @@ public class UserCreationConfirmationController {
         User createdUser;
 
         try {
-            createdUser = this.userCreationConfirmationService.deleteUponConfirmation(id);
+            createdUser = this.userCreationConfirmationService.deleteAllWithEmailUponConfirmation(id);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(e.getMessage()));
         }

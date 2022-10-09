@@ -2,7 +2,6 @@ package com.waverchat.api.v1.util;
 
 
 import com.waverchat.api.v1.user.UserConstants;
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,12 +9,15 @@ import java.util.regex.Pattern;
 public class ValidationUtil {
 
     public static boolean isValidEmail(String email) {
-        return new EmailValidator().isValid(email, null);
+        if (email.isEmpty()) return false;
+        Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(email);
+        return m.matches();
     }
 
     public static boolean isValidPassword(String password) {
         // checking if username is the right size
-        boolean correctSize = password.length() >= UserConstants.MIN_PASSWORD_LENGTH && password.length() <= UserConstants.MIN_PASSWORD_LENGTH;
+        boolean correctSize = password.length() >= UserConstants.MIN_PASSWORD_LENGTH && password.length() <= UserConstants.MAX_PASSWORD_LENGTH;
         if (!correctSize) return false;
 
         // checking if the password contains one of these special characters
@@ -39,6 +41,9 @@ public class ValidationUtil {
     }
 
     public static boolean isValidUsername(String username) {
+        if (username.isEmpty()) return false;
+        if (username.length() < UserConstants.MIN_USERNAME_LENGTH || username.length() > UserConstants.MAX_USERNAME_LENGTH)
+            return false;
         if (username.contains(" ")) return false;
         Pattern p = Pattern.compile("^[A-Za-z0-9_]*$");
         Matcher m = p.matcher(username);

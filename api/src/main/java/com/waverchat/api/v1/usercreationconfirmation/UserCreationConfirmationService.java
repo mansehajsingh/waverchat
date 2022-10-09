@@ -9,6 +9,7 @@ import com.waverchat.api.v1.util.ValidationUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class UserCreationConfirmationService {
         if (!ValidationUtil.isValidPassword(userCreationConfirmation.getPasswordHash())) {
             throw new ValidationException("Password is invalid");
         }
-        if (ValidationUtil.isValidPassword(userCreationConfirmation.getUsername())) {
+        if (!ValidationUtil.isValidUsername(userCreationConfirmation.getUsername())) {
             throw new ValidationException("Username is invalid.");
         }
 
@@ -74,7 +75,8 @@ public class UserCreationConfirmationService {
         }
     }
 
-    public User deleteUponConfirmation (UUID id) throws ResourceNotFoundException {
+    @Transactional
+    public User deleteAllWithEmailUponConfirmation (UUID id) throws ResourceNotFoundException {
         Optional<UserCreationConfirmation> result = this.userCreationConfirmationRepository.findById(id);
 
         if (result.isPresent()) {
@@ -91,7 +93,7 @@ public class UserCreationConfirmationService {
             // persist the user as a permanent user in the database
             this.userRepository.save(userToCreate);
             // delete the confirmation
-            this.userCreationConfirmationRepository.deleteById(id);
+            this.userCreationConfirmationRepository.deleteAllByEmailIgnoreCase(toDelete.getEmail());
             return userToCreate;
         } else {
             throw new ResourceNotFoundException("UserCreationConfirmation", id);
