@@ -15,6 +15,7 @@ public class AuthenticatedRoutesManager {
         this.authenticatedEndpoints = new ArrayList<AuthenticatedEndpoint>();
 
         /* ATTN: Add authenticated endpoints below */
+        addEndpoint("DELETE", "api/v1/sessions");
     }
 
     static protected AuthenticatedRoutesManager getInstance() {
@@ -23,8 +24,8 @@ public class AuthenticatedRoutesManager {
         return instance;
     }
 
-    private void addEndpoint(String endpoint) {
-        authenticatedEndpoints.add(new AuthenticatedEndpoint(endpoint));
+    private void addEndpoint(String method, String endpoint) {
+        authenticatedEndpoints.add(new AuthenticatedEndpoint(method, endpoint));
     }
 
     protected ArrayList<AuthenticatedEndpoint> getAuthenticatedEndpoints() {

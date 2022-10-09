@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.authentication.session;
 
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
+import com.waverchat.api.v1.user.User;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,10 @@ public class SessionService {
 
     public void deleteSessionById(UUID id) {
         this.sessionRepository.deleteById(id);
+    }
+
+    public void deleteSessionsByUser(User user) {
+        this.sessionRepository.deleteByUser(user);
     }
 
 }

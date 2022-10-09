@@ -13,7 +13,10 @@ public class AuthenticatedEndpoint {
     private String endpoint;
     private String endpointWithTrailingSlash;
 
-    public AuthenticatedEndpoint(String endpoint) {
+    private String method;
+
+    public AuthenticatedEndpoint(String method, String endpoint) {
+        this.method = method;
         this.originalEndpoint = endpoint;
         this.endpoint = this.parseToMatchableEndpoint(endpoint);
         this.endpointWithTrailingSlash = this.endpoint + "\\/";
@@ -34,7 +37,9 @@ public class AuthenticatedEndpoint {
         return endpoint;
     }
 
-    public boolean matchedByEndpoint(String epToMatch) {
+    public boolean matchedByEndpoint(String epToMatch, String method) {
+        if (!this.method.equals(method)) return false;
+
         Pattern ep = Pattern.compile(this.endpoint);
         Pattern epwt = Pattern.compile(this.endpointWithTrailingSlash);
         Matcher epMatcher = ep.matcher(epToMatch);

@@ -2,12 +2,14 @@ package com.waverchat.api.v1.authentication.session;
 
 import com.waverchat.api.v1.EnvironmentVariables;
 import com.waverchat.api.v1.authentication.AuthUtils;
+import com.waverchat.api.v1.authentication.session.http.AllSessionsDeletionRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionResponse;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.user.UserService;
+import com.waverchat.api.v1.util.RequestUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -103,5 +105,29 @@ public class SessionController {
         String accessToken = AuthUtils.issueAccessToken(UUID.fromString(claims.getId()), UUID.fromString(claims.getSubject()));
         return ResponseEntity.status(HttpStatus.CREATED).body(new SessionResponse(accessToken));
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAllSessionsByUser(
+            HttpServletRequest request,
+            @Valid @RequestBody AllSessionsDeletionRequest deletionRequest
+    ) {
+        UUID requestingUser = RequestUtil.getRequestingUser(request);
+
+        if (!deletionRequest.getUserId().equals(requestingUser.toString())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to delete sessions for this user."));
+        }
+
+        User user;
+
+        try {
+            user = this.userService.getById(requestingUser);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No user exists with this id"));
+        }
+
+        this.sessionService.deleteSessionsByUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("All sessions deleted successfully for the provided user id."));
+    }
+
 
 }

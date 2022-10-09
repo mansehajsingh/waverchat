@@ -26,10 +26,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String URI = request.getRequestURI();
+        String method = request.getMethod();
 
         // checking if uri falls into authenticated route scope
         for (AuthenticatedEndpoint authEp : AuthenticatedRoutesManager.getInstance().getAuthenticatedEndpoints()) {
-            if (authEp.matchedByEndpoint(URI)) {
+            if (authEp.matchedByEndpoint(URI, method)) {
                 // fetching signing key
                 byte[] decodedKey = Base64.getDecoder()
                         .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
@@ -45,8 +46,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
-                System.out.println("jws: " + jws);
-
                 Claims claims;
 
                 // if the parsing fails, the token was invalid
@@ -59,11 +58,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
                 // if jwt is expired
                 if (claims.getExpiration().before(new Date())) {
-                    response.setStatus(440); // http status does not support code 440 https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html
+                    response.setStatus(440); // HttpStatus does not support code 440 https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html
                     return false;
                 }
 
-                request.setAttribute("requestingUser", UUID.fromString(claims.getId()));
+                request.setAttribute("requestingUser", UUID.fromString(claims.getSubject()));
                 return true;
             }
         }
