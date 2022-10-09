@@ -2,7 +2,7 @@ package com.waverchat.api.v1.authentication.session;
 
 public class SessionConstants {
 
-    public static final int ACCESS_TOKEN_MAX_AGE_HOURS = 10;
+    public static final int ACCESS_TOKEN_MAX_AGE_HOURS = 1;
 
     public static final int REFRESH_TOKEN_MAX_AGE_MONTHS = 6;
 
