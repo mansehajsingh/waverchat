@@ -19,8 +19,16 @@ public class AuthenticatedEndpoint {
         this.endpointWithTrailingSlash = this.endpoint + "\\/";
     }
 
+    public String getEndpointRegex() {
+        return this.endpoint;
+    }
+
+    public String getEndpointRegexWithTrailingSlash() {
+        return this.endpointWithTrailingSlash;
+    }
+
     private String parseToMatchableEndpoint(String endpoint) {
-        endpoint = "^" + endpoint + "$";
+        endpoint = "^/" + endpoint + "$";
         endpoint = endpoint.replace("/", this.DELIMITER);
         endpoint = endpoint.replace("{}", this.ANY);
         return endpoint;

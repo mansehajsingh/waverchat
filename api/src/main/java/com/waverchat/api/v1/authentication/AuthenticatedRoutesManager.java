@@ -15,7 +15,6 @@ public class AuthenticatedRoutesManager {
         this.authenticatedEndpoints = new ArrayList<AuthenticatedEndpoint>();
 
         /* ATTN: Add authenticated endpoints below */
-
     }
 
     static protected AuthenticatedRoutesManager getInstance() {
