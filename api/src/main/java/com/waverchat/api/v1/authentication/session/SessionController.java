@@ -46,7 +46,7 @@ public class SessionController {
 
         // fetching the user by the email
         try {
-            user = this.userService.getByEmail(sessionCreationRequest.getEmail());
+            user = this.userService.getByEmailIgnoreCase(sessionCreationRequest.getEmail());
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new MessageResponse("No user with this email exists."));

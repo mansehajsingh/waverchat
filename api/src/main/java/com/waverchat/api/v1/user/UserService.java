@@ -13,8 +13,8 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User getByEmail(String email) throws ResourceNotFoundException {
-        Optional<User> result = this.userRepository.findByEmail(email);
+    public User getByEmailIgnoreCase(String email) throws ResourceNotFoundException {
+        Optional<User> result = this.userRepository.findByEmailIgnoreCase(email);
 
         if (result.isPresent()) {
             return result.get();
