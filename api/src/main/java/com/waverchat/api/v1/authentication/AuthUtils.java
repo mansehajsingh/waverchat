@@ -2,10 +2,10 @@ package com.waverchat.api.v1.authentication;
 
 import com.waverchat.api.v1.EnvironmentVariables;
 import com.waverchat.api.v1.authentication.session.SessionConstants;
-import io.github.cdimascio.dotenv.Dotenv;
-import io.github.cdimascio.dotenv.DotenvEntry;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -43,7 +43,7 @@ public class AuthUtils {
         return accessToken;
     }
 
-    public static String issueRefreshToken(UUID sessionId) {
+    public static String issueRefreshToken(UUID sessionId, UUID userId) {
         // Setting age of refresh token
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -58,12 +58,22 @@ public class AuthUtils {
 
         String refreshToken = Jwts.builder()
                 .setId(sessionId.toString())
+                .setSubject(userId.toString())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key)
                 .compact();
 
         return refreshToken;
+    }
+
+    public static Claims getClaimsFromToken(String token) throws SignatureException, MalformedJwtException {
+        // fetching the signing key
+        byte[] decodedKey = Base64.getDecoder()
+                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+        Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
+
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SessionCreationResponse {
+public class SessionResponse {
 
     private String accessToken;
 

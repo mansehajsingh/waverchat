@@ -9,4 +9,6 @@ import java.util.UUID;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, UUID> {
     Optional<Session> findById(UUID id);
+
+    void deleteById(UUID uuid);
 }
