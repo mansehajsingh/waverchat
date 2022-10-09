@@ -2,8 +2,10 @@ package com.waverchat.api.v1.usercreationconfirmation;
 
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.user.UserRepository;
+import com.waverchat.api.v1.util.ValidationUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,19 @@ public class UserCreationConfirmationService {
     private UserRepository userRepository;
 
     public UserCreationConfirmation create(UserCreationConfirmation userCreationConfirmation)
-            throws ConflictException
+            throws ConflictException, ValidationException
     {
+        // checking if the user provided valid credentials
+        if (!ValidationUtil.isValidEmail(userCreationConfirmation.getEmail())) {
+            throw new ValidationException("Email is invalid.");
+        }
+        if (!ValidationUtil.isValidPassword(userCreationConfirmation.getPasswordHash())) {
+            throw new ValidationException("Password is invalid");
+        }
+        if (ValidationUtil.isValidPassword(userCreationConfirmation.getUsername())) {
+            throw new ValidationException("Username is invalid.");
+        }
+
         // if a user is already registered with the desired username we can't allow a new
         // user registry with that username
         if (this.userRepository.existsByUsernameIgnoreCase(userCreationConfirmation.getUsername())) {

@@ -2,12 +2,14 @@ package com.waverchat.api.v1.usercreationconfirmation;
 
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.usercreationconfirmation.UserCreationConfirmation;
 import com.waverchat.api.v1.usercreationconfirmation.UserCreationConfirmationService;
 import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationRequest;
 import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationResponse;
+import com.waverchat.api.v1.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,8 @@ public class UserCreationConfirmationController {
             this.userCreationConfirmationService.create(userCreationConfirmation);
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MessageResponse(e.getMessage()));
         }
 
         // TODO: Send email template to requested email
