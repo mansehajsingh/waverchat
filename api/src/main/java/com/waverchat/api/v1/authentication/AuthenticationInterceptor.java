@@ -31,15 +31,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         // checking if uri falls into authenticated route scope
         for (AuthenticatedEndpoint authEp : AuthenticatedRoutesManager.getInstance().getAuthenticatedEndpoints()) {
             if (authEp.matchedByEndpoint(URI, method)) {
-                // fetching signing key
-                byte[] decodedKey = Base64.getDecoder()
-                        .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
-                Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
-
                 String jws;
 
                 // checking to see if something like a token exists in the authorization header
-                if (request.getHeader("Authorization").length() > 7) {
+                if (
+                        request.getHeader("Authorization") != null &&
+                        request.getHeader("Authorization").length() > 7)
+                {
                     jws = request.getHeader("Authorization").substring(7); // header comes as a string of the form "Bearer ey...."
                 } else {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -50,7 +48,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
                 // if the parsing fails, the token was invalid
                 try {
-                    claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jws).getBody();
+                    claims = AuthUtils.getClaimsFromToken(jws);
                 } catch (SignatureException | MalformedJwtException e) {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     return false;
