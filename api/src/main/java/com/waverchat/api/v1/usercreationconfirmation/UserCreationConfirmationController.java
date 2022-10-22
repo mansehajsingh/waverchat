@@ -4,6 +4,7 @@ import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.http.response.MessageResponse;
+import com.waverchat.api.v1.http.response.MultiMessageResponse;
 import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationRequest;
 import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationResponse;
@@ -39,7 +40,7 @@ public class UserCreationConfirmationController {
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
         } catch (ValidationException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MessageResponse(e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MultiMessageResponse(e.getMessages()));
         }
 
         // TODO: Send email template to requested email
