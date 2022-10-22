@@ -74,7 +74,7 @@ public class UserCreationConfirmation extends ApplicationEntity {
         if (!UserCreationConfirmationValidationUtil.isValidEmail(this.getEmail())) {
             validationExceptionMessages.add("Email is invalid");
         }
-        if (!UserCreationConfirmationValidationUtil.isValidPassword(this.getPasswordHash())) {
+        if (!UserCreationConfirmationValidationUtil.isValidPassword(this.getPassword())) {
             validationExceptionMessages.add("Password is invalid");
         }
         if (!UserCreationConfirmationValidationUtil.isValidUsername(this.getUsername())) {
@@ -89,7 +89,7 @@ public class UserCreationConfirmation extends ApplicationEntity {
 
         // if there were any error messages added during validation we want to throw an exception
         // containing all those messages
-        if (validationExceptionMessages.isEmpty()) {
+        if (!validationExceptionMessages.isEmpty()) {
             throw new ValidationException(validationExceptionMessages);
         }
     }
