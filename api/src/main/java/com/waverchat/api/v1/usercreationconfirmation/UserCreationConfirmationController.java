@@ -29,11 +29,9 @@ public class UserCreationConfirmationController {
         UserCreationConfirmation userCreationConfirmation = new UserCreationConfirmation(
                 userCreationConfirmationRequest.getEmail(),
                 userCreationConfirmationRequest.getUsername(),
-                userCreationConfirmationRequest.getPassword(), // the service implementation will hash it
+                userCreationConfirmationRequest.getPassword(),
                 userCreationConfirmationRequest.getFirstName(),
-                userCreationConfirmationRequest.getLastName(),
-                false,
-                false
+                userCreationConfirmationRequest.getLastName()
         );
 
         try {

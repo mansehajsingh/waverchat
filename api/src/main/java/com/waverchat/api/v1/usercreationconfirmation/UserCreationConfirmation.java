@@ -35,6 +35,10 @@ public class UserCreationConfirmation extends ApplicationEntity {
     @NotEmpty
     private String passwordHash;
 
+    // Does not exist in db, only used at the service level
+    @Transient
+    private String password;
+
     @NotNull
     @NotBlank
     @Length(min = UserConstants.MIN_FIRST_NAME_LENGTH, max = UserConstants.MAX_FIRST_NAME_LENGTH)
@@ -49,5 +53,15 @@ public class UserCreationConfirmation extends ApplicationEntity {
 
     @NotNull
     private boolean deleted = false;
+
+    public UserCreationConfirmation(String email, String username, String password, String firstName, String lastName) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.superUser = false;
+        this.deleted = false;
+    }
 
 }

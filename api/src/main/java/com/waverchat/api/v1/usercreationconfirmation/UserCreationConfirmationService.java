@@ -56,7 +56,7 @@ public class UserCreationConfirmationService {
 
         // hashing supplied user password before passing it on to the db
         userCreationConfirmation.setPasswordHash(
-                BCrypt.hashpw(userCreationConfirmation.getPasswordHash(), BCrypt.gensalt())
+                BCrypt.hashpw(userCreationConfirmation.getPassword(), BCrypt.gensalt())
         );
 
         return this.userCreationConfirmationRepository.save(userCreationConfirmation);
