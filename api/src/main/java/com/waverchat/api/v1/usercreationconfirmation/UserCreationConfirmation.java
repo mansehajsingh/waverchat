@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.usercreationconfirmation;
 
 import com.waverchat.api.v1.ApplicationEntity;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.user.UserConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -62,6 +65,33 @@ public class UserCreationConfirmation extends ApplicationEntity {
         this.lastName = lastName;
         this.superUser = false;
         this.deleted = false;
+    }
+
+    public void validate() throws ValidationException {
+        List<String> validationExceptionMessages = new ArrayList<>();
+
+        // checking if the user provided valid credentials
+        if (!UserCreationConfirmationValidationUtil.isValidEmail(this.getEmail())) {
+            validationExceptionMessages.add("Email is invalid");
+        }
+        if (!UserCreationConfirmationValidationUtil.isValidPassword(this.getPasswordHash())) {
+            validationExceptionMessages.add("Password is invalid");
+        }
+        if (!UserCreationConfirmationValidationUtil.isValidUsername(this.getUsername())) {
+            validationExceptionMessages.add("Username is invalid.");
+        }
+        if (!UserCreationConfirmationValidationUtil.isValidFirstName(this.getFirstName())) {
+            validationExceptionMessages.add("First name is invalid.");
+        }
+        if (!UserCreationConfirmationValidationUtil.isValidLastName(this.getLastName())) {
+            validationExceptionMessages.add("Last name is invalid.");
+        }
+
+        // if there were any error messages added during validation we want to throw an exception
+        // containing all those messages
+        if (validationExceptionMessages.isEmpty()) {
+            throw new ValidationException(validationExceptionMessages);
+        }
     }
 
 }

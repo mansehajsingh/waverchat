@@ -50,4 +50,14 @@ public class UserCreationConfirmationValidationUtil {
         return m.matches();
     }
 
+    public static boolean isValidFirstName(String firstName) {
+        if (firstName == null) return false;
+        if (firstName.length() == 0) return false;
+        return true;
+    }
+
+    public static boolean isValidLastName(String lastName) {
+        return !(lastName == null);
+    }
+
 }

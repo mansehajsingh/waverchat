@@ -25,16 +25,8 @@ public class UserCreationConfirmationService {
     public UserCreationConfirmation create(UserCreationConfirmation userCreationConfirmation)
             throws ConflictException, ValidationException
     {
-        // checking if the user provided valid credentials
-        if (!UserCreationConfirmationValidationUtil.isValidEmail(userCreationConfirmation.getEmail())) {
-            throw new ValidationException("Email is invalid.");
-        }
-        if (!UserCreationConfirmationValidationUtil.isValidPassword(userCreationConfirmation.getPasswordHash())) {
-            throw new ValidationException("Password is invalid");
-        }
-        if (!UserCreationConfirmationValidationUtil.isValidUsername(userCreationConfirmation.getUsername())) {
-            throw new ValidationException("Username is invalid.");
-        }
+        // validate the user provided credentials
+        userCreationConfirmation.validate();
 
         // if a user is already registered with the desired username we can't allow a new
         // user registry with that username
