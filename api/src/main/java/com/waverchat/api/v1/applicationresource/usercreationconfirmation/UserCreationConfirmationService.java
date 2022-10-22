@@ -1,10 +1,10 @@
-package com.waverchat.api.v1.usercreationconfirmation;
+package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 
+import com.waverchat.api.v1.applicationresource.user.User;
+import com.waverchat.api.v1.applicationresource.user.UserRepository;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
-import com.waverchat.api.v1.user.User;
-import com.waverchat.api.v1.user.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

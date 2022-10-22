@@ -1,8 +1,8 @@
-package com.waverchat.api.v1.usercreationconfirmation;
+package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 
 import com.waverchat.api.v1.ApplicationEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
-import com.waverchat.api.v1.user.UserConstants;
+import com.waverchat.api.v1.applicationresource.user.UserConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

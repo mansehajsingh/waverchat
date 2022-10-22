@@ -1,11 +1,10 @@
-package com.waverchat.api.v1.user;
+package com.waverchat.api.v1.applicationresource.user;
 
 import com.waverchat.api.v1.ApplicationEntity;
 import com.waverchat.api.v1.authentication.session.Session;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;

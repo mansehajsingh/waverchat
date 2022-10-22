@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.usercreationconfirmation.http;
+package com.waverchat.api.v1.applicationresource.usercreationconfirmation.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

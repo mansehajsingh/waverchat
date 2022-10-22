@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.user;
+package com.waverchat.api.v1.applicationresource.user;
 
 public class UserConstants {
 

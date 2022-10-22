@@ -1,6 +1,6 @@
-package com.waverchat.api.v1.usercreationconfirmation.http;
+package com.waverchat.api.v1.applicationresource.usercreationconfirmation.http;
 
-import com.waverchat.api.v1.user.UserConstants;
+import com.waverchat.api.v1.applicationresource.user.UserConstants;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 

@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.user;
+package com.waverchat.api.v1.applicationresource.user;
 
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

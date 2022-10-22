@@ -1,13 +1,13 @@
-package com.waverchat.api.v1.usercreationconfirmation;
+package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 
+import com.waverchat.api.v1.applicationresource.usercreationconfirmation.http.UserCreationConfirmationRequest;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.http.response.MultiMessageResponse;
-import com.waverchat.api.v1.user.User;
-import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationRequest;
-import com.waverchat.api.v1.usercreationconfirmation.http.UserCreationConfirmationResponse;
+import com.waverchat.api.v1.applicationresource.user.User;
+import com.waverchat.api.v1.applicationresource.usercreationconfirmation.http.UserCreationConfirmationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

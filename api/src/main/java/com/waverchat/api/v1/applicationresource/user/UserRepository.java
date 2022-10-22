@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.user;
+package com.waverchat.api.v1.applicationresource.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
