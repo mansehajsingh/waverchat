@@ -2,20 +2,17 @@ package com.waverchat.api.v1.authentication;
 
 import com.waverchat.api.v1.util.AuthenticatedEndpoint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AuthenticatedRoutesManager {
 
     private static AuthenticatedRoutesManager instance;
 
-    private ArrayList<AuthenticatedEndpoint> authenticatedEndpoints;
+    private List<AuthenticatedEndpoint> authenticatedEndpoints;
 
     private AuthenticatedRoutesManager () {
-        this.authenticatedEndpoints = new ArrayList<AuthenticatedEndpoint>();
-
-        /* ATTN: Add authenticated endpoints below */
-        addEndpoint("DELETE", "api/v1/sessions");
+        AuthenticationConfig authConfig = new AuthenticationConfig();
+        this.authenticatedEndpoints = authConfig.getAuthenticatedEndpointsFromConfig();
     }
 
     static protected AuthenticatedRoutesManager getInstance() {
@@ -28,7 +25,7 @@ public class AuthenticatedRoutesManager {
         authenticatedEndpoints.add(new AuthenticatedEndpoint(method, endpoint));
     }
 
-    protected ArrayList<AuthenticatedEndpoint> getAuthenticatedEndpoints() {
+    protected List<AuthenticatedEndpoint> getAuthenticatedEndpoints() {
         return this.authenticatedEndpoints;
     }
 

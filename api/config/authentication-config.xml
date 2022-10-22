@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<authentication>
+    <v1>
+        <authenticatedEndpoints>
+            <endpoint>
+                <method>DELETE</method>
+                <uri>api/v1/sessions</uri>
+            </endpoint>
+        </authenticatedEndpoints>
+    </v1>
+</authentication>
