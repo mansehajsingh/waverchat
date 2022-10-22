@@ -5,7 +5,6 @@ import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.user.User;
 import com.waverchat.api.v1.user.UserRepository;
-import com.waverchat.api.v1.util.ValidationUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +26,13 @@ public class UserCreationConfirmationService {
             throws ConflictException, ValidationException
     {
         // checking if the user provided valid credentials
-        if (!ValidationUtil.isValidEmail(userCreationConfirmation.getEmail())) {
+        if (!UserCreationConfirmationValidationUtil.isValidEmail(userCreationConfirmation.getEmail())) {
             throw new ValidationException("Email is invalid.");
         }
-        if (!ValidationUtil.isValidPassword(userCreationConfirmation.getPasswordHash())) {
+        if (!UserCreationConfirmationValidationUtil.isValidPassword(userCreationConfirmation.getPasswordHash())) {
             throw new ValidationException("Password is invalid");
         }
-        if (!ValidationUtil.isValidUsername(userCreationConfirmation.getUsername())) {
+        if (!UserCreationConfirmationValidationUtil.isValidUsername(userCreationConfirmation.getUsername())) {
             throw new ValidationException("Username is invalid.");
         }
 
