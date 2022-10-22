@@ -27,18 +27,21 @@ public class AuthenticationConfig {
     }
 
     public List<AuthenticatedEndpoint> getAuthenticatedEndpointsFromConfig() {
-        NodeList v1Nodes = this.document.getElementsByTagName("v1");
+        NodeList v1Nodes = this.document.getElementsByTagName("v1").item(0).getChildNodes();
         NodeList endpointNodes = null;
 
         for (int i = 0; i < v1Nodes.getLength(); i++) {
             if (v1Nodes.item(i).getNodeName().equals("authenticatedEndpoints")) {
                 endpointNodes = v1Nodes.item(i).getChildNodes();
+                break;
             }
         }
 
         List<AuthenticatedEndpoint> authenticatedEndpoints = new ArrayList<>();
 
         for (int i = 0; i < endpointNodes.getLength(); i++) {
+            if (!endpointNodes.item(i).getNodeName().equals("endpoint")) continue;
+
             NodeList currEpData = endpointNodes.item(i).getChildNodes();
             String method = null;
             String uri = null;
