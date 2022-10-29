@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.applicationresource.user;
 
-import com.waverchat.api.v1.ApplicationEntity;
+import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.authentication.session.Session;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +28,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends ApplicationEntity {
+public class User extends AbstractApplicationEntity {
 
     @NotNull
     private String email;

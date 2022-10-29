@@ -65,6 +65,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
 
+        request.setAttribute("requestingUser", AuthUtils.Enumerables.ANONYMOUS_USER);
         return true;
     }
 

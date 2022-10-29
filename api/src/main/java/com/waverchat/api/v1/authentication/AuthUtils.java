@@ -16,6 +16,10 @@ import java.util.UUID;
 
 public class AuthUtils {
 
+    public enum Enumerables {
+        ANONYMOUS_USER,
+    }
+
     private AuthUtils() {}
 
     public static String issueAccessToken(UUID sessionId, UUID userId) {

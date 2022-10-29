@@ -1,19 +1,23 @@
 package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 
-import com.waverchat.api.v1.ApplicationEntity;
-import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.applicationresource.user.UserConstants;
+import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(
@@ -25,7 +29,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationConfirmation extends ApplicationEntity {
+public class UserCreationConfirmation extends AbstractApplicationEntity {
 
     @NotNull
     private String email;
@@ -57,33 +61,34 @@ public class UserCreationConfirmation extends ApplicationEntity {
     @NotNull
     private boolean deleted = false;
 
-    public UserCreationConfirmation(String email, String username, String password, String firstName, String lastName) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserCreationConfirmation(Map<String, Object> requestBody) {
+        this.email = (String) requestBody.get("email");
+        this.username = (String) requestBody.get("username");
+        this.password = (String) requestBody.get("password");
+        this.firstName = (String) requestBody.get("firstName");
+        this.lastName = (String) requestBody.get("lastName");
         this.superUser = false;
         this.deleted = false;
     }
 
+    @Override
     public void validate() throws ValidationException {
         List<String> validationExceptionMessages = new ArrayList<>();
 
         // checking if the user provided valid credentials
-        if (!UserCreationConfirmationValidationUtil.isValidEmail(this.getEmail())) {
+        if (!UserCreationConfirmationUtil.isValidEmail(this.getEmail())) {
             validationExceptionMessages.add("Email is invalid");
         }
-        if (!UserCreationConfirmationValidationUtil.isValidPassword(this.getPassword())) {
+        if (!UserCreationConfirmationUtil.isValidPassword(this.getPassword())) {
             validationExceptionMessages.add("Password is invalid");
         }
-        if (!UserCreationConfirmationValidationUtil.isValidUsername(this.getUsername())) {
+        if (!UserCreationConfirmationUtil.isValidUsername(this.getUsername())) {
             validationExceptionMessages.add("Username is invalid.");
         }
-        if (!UserCreationConfirmationValidationUtil.isValidFirstName(this.getFirstName())) {
+        if (!UserCreationConfirmationUtil.isValidFirstName(this.getFirstName())) {
             validationExceptionMessages.add("First name is invalid.");
         }
-        if (!UserCreationConfirmationValidationUtil.isValidLastName(this.getLastName())) {
+        if (!UserCreationConfirmationUtil.isValidLastName(this.getLastName())) {
             validationExceptionMessages.add("Last name is invalid.");
         }
 

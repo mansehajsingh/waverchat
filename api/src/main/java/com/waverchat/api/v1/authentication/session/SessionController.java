@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -111,7 +113,7 @@ public class SessionController {
             HttpServletRequest request,
             @Valid @RequestBody AllSessionsDeletionRequest deletionRequest
     ) {
-        UUID requestingUser = RequestUtil.getRequestingUser(request);
+        UUID requestingUser = RequestUtil.getRequestingUser(request).get();
 
         if (!deletionRequest.getUserId().equals(requestingUser.toString())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to delete sessions for this user."));
@@ -120,8 +122,8 @@ public class SessionController {
         User user;
 
         try {
-            user = this.userService.getById(requestingUser);
-        } catch (ResourceNotFoundException e) {
+            user = this.userService.getById(requestingUser).get();
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No user exists with this id"));
         }
 
