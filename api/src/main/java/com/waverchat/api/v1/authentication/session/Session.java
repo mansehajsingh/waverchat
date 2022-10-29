@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.authentication.session;
 
-import com.waverchat.api.v1.ApplicationEntity;
+import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.applicationresource.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Session extends ApplicationEntity {
+public class Session extends AbstractApplicationEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

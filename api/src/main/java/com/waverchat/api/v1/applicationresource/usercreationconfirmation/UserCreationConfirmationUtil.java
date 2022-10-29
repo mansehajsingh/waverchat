@@ -6,7 +6,7 @@ import com.waverchat.api.v1.applicationresource.user.UserConstants;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserCreationConfirmationValidationUtil {
+public class UserCreationConfirmationUtil {
 
     public static boolean isValidEmail(String email) {
         if (email.isEmpty()) return false;

@@ -1,18 +1,17 @@
-package com.waverchat.api.v1;
+package com.waverchat.api.v1.customframework;
 
+import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
 @Data
-public class ApplicationEntity {
+public abstract class AbstractApplicationEntity {
 
     @Id
     @GeneratedValue
@@ -23,5 +22,7 @@ public class ApplicationEntity {
 
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
+
+    public void validate() throws ValidationException {}
 
 }
