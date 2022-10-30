@@ -95,6 +95,10 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
 
+        if (createdEntity.isPresent()) {
+            responseBody.put("createdAt", createdEntity.get().getCreatedAt());
+            responseBody.put("updatedAt", createdEntity.get().getUpdatedAt());
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
@@ -134,6 +138,9 @@ public abstract class AbstractApplicationResource<
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No resource with id " + uuid + " could be found."));
         }
+
+        responseBody.put("createdAt", queriedEntityOpt.get().getCreatedAt());
+        responseBody.put("updatedAt", queriedEntityOpt.get().getUpdatedAt());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
