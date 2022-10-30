@@ -1,22 +1,16 @@
 package com.waverchat.api.v1.authentication;
 
-
-import com.waverchat.api.v1.EnvironmentVariables;
-import com.waverchat.api.v1.authentication.session.SessionConstants;
 import com.waverchat.api.v1.util.AuthenticatedEndpoint;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -49,7 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // if the parsing fails, the token was invalid
                 try {
                     claims = AuthUtils.getClaimsFromToken(jws);
-                } catch (SignatureException | MalformedJwtException e) {
+                } catch (SignatureException | MalformedJwtException | ExpiredJwtException e) {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     return false;
                 }
