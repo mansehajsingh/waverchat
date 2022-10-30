@@ -33,6 +33,12 @@ public abstract class AbstractApplicationResource<
     @Autowired
     protected S service;
 
+    /* Below are configurable properties that can be overridden by the inheritors of this class */
+    protected boolean sendTimeStampsOnCreate = true;
+    protected boolean sendTimeStampsOnView = true;
+    protected boolean sendTimeStampsOnEdit = true;
+    // Delete has empty response body so it does not receive a time stamp configuration
+
     @PostMapping(consumes={MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> create(
             @RequestBody Map<String, Object> requestBody,
@@ -95,7 +101,7 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
 
-        if (createdEntity.isPresent()) {
+        if (createdEntity.isPresent() && this.sendTimeStampsOnCreate) {
             responseBody.put("createdAt", createdEntity.get().getCreatedAt());
             responseBody.put("updatedAt", createdEntity.get().getUpdatedAt());
         }
@@ -139,8 +145,10 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No resource with id " + uuid + " could be found."));
         }
 
-        responseBody.put("createdAt", queriedEntityOpt.get().getCreatedAt());
-        responseBody.put("updatedAt", queriedEntityOpt.get().getUpdatedAt());
+        if (this.sendTimeStampsOnView) {
+            responseBody.put("createdAt", queriedEntityOpt.get().getCreatedAt());
+            responseBody.put("updatedAt", queriedEntityOpt.get().getUpdatedAt());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

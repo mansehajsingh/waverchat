@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,12 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
 
     @Autowired
     private UserService userService;
+
+    @PostConstruct
+    public void initialize() {
+        super.sendTimeStampsOnCreate = true;
+        super.sendTimeStampsOnView = false;
+    }
 
     @Override
     public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
