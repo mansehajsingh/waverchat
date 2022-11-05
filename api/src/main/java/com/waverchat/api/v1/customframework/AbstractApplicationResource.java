@@ -112,6 +112,7 @@ public abstract class AbstractApplicationResource<
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(
             @PathVariable String id,
+            @PathVariable Map<String, String> pathVariables,
             HttpServletRequest request
     )
     {
@@ -126,19 +127,19 @@ public abstract class AbstractApplicationResource<
         }
 
         // Verifying that the requesting user has permissions to get this object
-        if (!this.hasViewPermissions(uuid, requestingUser)) {
+        if (!this.hasViewPermissions(uuid, pathVariables, requestingUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to get resource."));
         }
 
         // fetching the entity
-        this.beforeGet(uuid, requestingUser);
+        this.beforeGet(uuid, pathVariables, requestingUser);
         Optional<E> queriedEntityOpt = this.service.getById(uuid);
-        this.afterGet(uuid, queriedEntityOpt, requestingUser);
+        this.afterGet(uuid, pathVariables, queriedEntityOpt, requestingUser);
 
         // forming the response body
         Map<String, Object> responseBody;
         try {
-            responseBody = this.formViewRequestBody(uuid, queriedEntityOpt.get(), requestingUser);
+            responseBody = this.formViewRequestBody(uuid, queriedEntityOpt.get(), pathVariables, requestingUser);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         } catch (NoSuchElementException e) {
@@ -165,15 +166,15 @@ public abstract class AbstractApplicationResource<
         throw new NotImplementedException("Did not implement formCreationRequestBody method.");
     }
 
-    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {
         return false;
     }
 
-    public void beforeGet(UUID id, Optional<UUID> requestingUser) {}
+    public void beforeGet(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {}
 
-    public void afterGet(UUID id, Optional<E> queriedEntity, Optional<UUID> requestingUser) {}
+    public void afterGet(UUID id, Map<String, String> pathVariables, Optional<E> queriedEntity, Optional<UUID> requestingUser) {}
 
-    public Map<String, Object> formViewRequestBody(UUID id, E queriedEntity, Optional<UUID> requestingUser) throws NotImplementedException {
+    public Map<String, Object> formViewRequestBody(UUID id, E queriedEntity, Map<String, String> pathVariables, Optional<UUID> requestingUser) throws NotImplementedException {
         throw new NotImplementedException("Did not implement formViewRequestBody method.");
     }
 

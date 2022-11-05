@@ -35,7 +35,7 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     }
 
     @Override
-    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {
         return true;
     }
 
@@ -63,6 +63,7 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     public Map<String, Object> formViewRequestBody(
             UUID id,
             UserCreationConfirmation queriedUCC,
+            Map<String, String> pathVariables,
             Optional<UUID> requestingUser
     )
             throws NotImplementedException
@@ -73,10 +74,12 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     }
 
     @Override
-    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, Optional<UUID> requestingUser) {
+    public void afterGet(UUID id, Map<String, String> pathVariables, Optional<UserCreationConfirmation> queriedEntity, Optional<UUID> requestingUser) {
         if (queriedEntity.isEmpty()) return;
 
         UserCreationConfirmation toDelete = queriedEntity.get();
+
+        // TODO: Send email template containing id
 
         User userToCreate = new User(
                 toDelete.getEmail(),
