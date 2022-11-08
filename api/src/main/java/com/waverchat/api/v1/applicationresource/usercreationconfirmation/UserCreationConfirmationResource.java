@@ -17,17 +17,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user-creation-confirmations")
 public class UserCreationConfirmationResource extends AbstractApplicationResource<
-        UserCreationConfirmation, UserCreationConfirmationService
+        UserCreationConfirmation, UserCreationConfirmationService, UserCreationConfirmationResponseFactory
 > {
 
     @Autowired
     private UserService userService;
-
-    @PostConstruct
-    public void initialize() {
-        super.sendTimeStampsOnCreate = true;
-        super.sendTimeStampsOnView = false;
-    }
 
     @Override
     public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
@@ -37,40 +31,6 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     @Override
     public boolean hasViewPermissions(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {
         return true;
-    }
-
-    @Override
-    public Map<String, Object> formCreationRequestBody(
-            Optional<UserCreationConfirmation> createdUCCOpt,
-            Map<String, Object> requestBody,
-            Optional<UUID> requestingUser
-    )
-            throws NotImplementedException
-    {
-        Map responseBody = new HashMap<String, Object>();
-
-        UserCreationConfirmation createdUCC = createdUCCOpt.get();
-
-        responseBody.put("email", createdUCC.getEmail());
-        responseBody.put("username", createdUCC.getUsername());
-        responseBody.put("firstName", createdUCC.getFirstName());
-        responseBody.put("lastName", createdUCC.getLastName());
-
-        return responseBody;
-    }
-
-    @Override
-    public Map<String, Object> formViewRequestBody(
-            UUID id,
-            UserCreationConfirmation queriedUCC,
-            Map<String, String> pathVariables,
-            Optional<UUID> requestingUser
-    )
-            throws NotImplementedException
-    {
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("message", "Created user with provided details successfully.");
-        return responseBody;
     }
 
     @Override

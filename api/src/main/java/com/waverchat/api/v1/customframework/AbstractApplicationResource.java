@@ -1,7 +1,11 @@
 package com.waverchat.api.v1.customframework;
 
+import com.waverchat.api.v1.customframework.dto.CreationResponse;
+import com.waverchat.api.v1.customframework.dto.ViewAllResponseComponent;
+import com.waverchat.api.v1.customframework.dto.ViewResponse;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
+import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.http.response.MultiMessageResponse;
@@ -10,34 +14,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractApplicationResource<
         E extends AbstractApplicationEntity,
-        S extends AbstractApplicationService<E>
+        S extends AbstractApplicationService<E>,
+        R extends ResponseDTOFactory
 > {
 
     @Autowired
     protected S service;
 
-    /* Below are configurable properties that can be overridden by the inheritors of this class */
-    protected boolean sendTimeStampsOnCreate = true;
-    protected boolean sendTimeStampsOnView = true;
-    protected boolean sendTimeStampsOnEdit = true;
-    // Delete has empty response body so it does not receive a time stamp configuration
+    private R createResponseFactoryInstance() throws Exception {
+        Class<R> responseFactoryType = (Class<R>) ((ParameterizedType) getClass()
+                    .getGenericSuperclass()).getActualTypeArguments()[2];
+        Constructor<R> rfCtor = responseFactoryType.getConstructor();
+        return rfCtor.newInstance();
+    }
 
     @PostMapping(consumes={MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> create(
@@ -92,18 +92,23 @@ public abstract class AbstractApplicationResource<
         Optional<E> createdEntity = service.create(entityToCreate);
         this.afterCreate(createdEntity, requestBody, requestingUser);
 
-
-        // forming the response body
-        Map<String, Object> responseBody;
+        // creating instance of the entity's response factory
+        R responseFactory;
         try {
-            responseBody = this.formCreationRequestBody(createdEntity, requestBody, requestingUser);
-        } catch (NotImplementedException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
+            responseFactory = this.createResponseFactoryInstance();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("There was an error processing the request."));
         }
 
-        if (createdEntity.isPresent() && this.sendTimeStampsOnCreate) {
-            responseBody.put("createdAt", createdEntity.get().getCreatedAt());
-            responseBody.put("updatedAt", createdEntity.get().getUpdatedAt());
+        // forming the response body
+        CreationResponse responseBody;
+        try {
+            responseBody = responseFactory.createCreationResponse(createdEntity, requestBody, requestingUser);
+        } catch (NotImplementedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MultiMessageResponse(e.getMessages()));
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
@@ -114,8 +119,7 @@ public abstract class AbstractApplicationResource<
             @PathVariable String id,
             @PathVariable Map<String, String> pathVariables,
             HttpServletRequest request
-    )
-    {
+    ) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
         // Parse uuid from string
@@ -136,22 +140,66 @@ public abstract class AbstractApplicationResource<
         Optional<E> queriedEntityOpt = this.service.getById(uuid);
         this.afterGet(uuid, pathVariables, queriedEntityOpt, requestingUser);
 
-        // forming the response body
-        Map<String, Object> responseBody;
+        // initializing the entity's response factory
+        R responseFactory;
         try {
-            responseBody = this.formViewRequestBody(uuid, queriedEntityOpt.get(), pathVariables, requestingUser);
+            responseFactory = this.createResponseFactoryInstance();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("There was an error processing the request."));
+        }
+
+        // forming the response body
+        ViewResponse responseBody;
+        try {
+            responseBody = responseFactory.createViewResponse(uuid, queriedEntityOpt.get(), pathVariables, requestingUser);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No resource with id " + uuid + " could be found."));
-        }
-
-        if (this.sendTimeStampsOnView) {
-            responseBody.put("createdAt", queriedEntityOpt.get().getCreatedAt());
-            responseBody.put("updatedAt", queriedEntityOpt.get().getUpdatedAt());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse(e.getMessage()));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAll(
+            @PathVariable Map<String, String> pathVariables,
+            @RequestParam Map<String, String> queryParams,
+            HttpServletRequest request
+    ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
+
+        if (!this.hasViewAllPermissions(pathVariables, queryParams, requestingUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to get resource."));
+        }
+
+        this.beforeGetAll(pathVariables, queryParams, requestingUser);
+        List<E> queriedEntities = this.service.getAll(pathVariables, queryParams);
+        this.afterGetAll(pathVariables, queryParams, queriedEntities, requestingUser);
+
+        // initializing the entity's response factory
+        R responseFactory;
+        try {
+            responseFactory = this.createResponseFactoryInstance();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("There was an error processing the request."));
+        }
+
+        List<ViewAllResponseComponent> responseBody;
+        try {
+            responseBody = responseFactory.createViewAllResponse(pathVariables, queryParams, queriedEntities, requestingUser);
+        } catch (NotImplementedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
+        }
+
+        Map<String, List<ViewAllResponseComponent>> responseObj = new HashMap<>();
+        responseObj.put("entities", responseBody);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseObj);
     }
 
     public boolean hasCreatePermissions(E entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
@@ -162,10 +210,6 @@ public abstract class AbstractApplicationResource<
 
     public void afterCreate(Optional<E> createdEntity, Map<String, Object> requestBody, Optional<UUID> requestingUser) {}
 
-    public Map<String, Object> formCreationRequestBody(Optional<E> createdEntity, Map<String, Object> requestBody, Optional<UUID> requestingUser) throws NotImplementedException {
-        throw new NotImplementedException("Did not implement formCreationRequestBody method.");
-    }
-
     public boolean hasViewPermissions(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {
         return false;
     }
@@ -174,9 +218,13 @@ public abstract class AbstractApplicationResource<
 
     public void afterGet(UUID id, Map<String, String> pathVariables, Optional<E> queriedEntity, Optional<UUID> requestingUser) {}
 
-    public Map<String, Object> formViewRequestBody(UUID id, E queriedEntity, Map<String, String> pathVariables, Optional<UUID> requestingUser) throws NotImplementedException {
-        throw new NotImplementedException("Did not implement formViewRequestBody method.");
+    public boolean hasViewAllPermissions(Map<String, String> pathVariables, Map<String, String> queryParams, Optional<UUID> requestingUser) {
+        return false;
     }
+
+    public void beforeGetAll(Map<String, String> pathVariables, Map<String, String> queryParams, Optional<UUID> requestingUser) {}
+
+    public void afterGetAll(Map<String, String> pathVariables, Map<String, String> queryParams, List<E> queriedEntities, Optional<UUID> requestingUser) {}
 
     public boolean hasEditPermissions(UUID id, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
         return false;

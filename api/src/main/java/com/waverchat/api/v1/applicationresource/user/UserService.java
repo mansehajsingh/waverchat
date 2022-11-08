@@ -1,10 +1,14 @@
 package com.waverchat.api.v1.applicationresource.user;
 
+import com.google.common.collect.Lists;
+import com.querydsl.core.BooleanBuilder;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,4 +40,27 @@ public class UserService extends AbstractApplicationService<User> {
         return this.userRepository.findById(id);
     }
 
+    @Override
+    public List<User> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) {
+        QUser qUser = QUser.user;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (queryParams.containsKey("username")) {
+            String qUsername = queryParams.get("username");
+
+            if (qUsername.startsWith("*") && qUsername.endsWith("*"))
+                builder.and(qUser.username.contains(qUsername.substring(1, qUsername.length() - 1)));
+
+            else if (qUsername.startsWith("*"))
+                builder.and(qUser.username.endsWith(qUsername.substring(1)));
+
+            else if (qUsername.endsWith("*"))
+                builder.and(qUser.username.startsWith(qUsername.substring(0, qUsername.length() - 1)));
+
+            else builder.and(qUser.username.eq(qUsername));
+        }
+
+        Iterable<User> iter = userRepository.findAll(builder);
+        return Lists.newArrayList(iter);
+    }
 }
