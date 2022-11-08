@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.querydsl.core.BooleanBuilder;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
+import com.waverchat.api.v1.util.PageableFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,7 +62,7 @@ public class UserService extends AbstractApplicationService<User> {
             else builder.and(qUser.username.eq(qUsername));
         }
 
-        Iterable<User> iter = userRepository.findAll(builder);
+        Iterable<User> iter = userRepository.findAll(builder, PageableFactory.createPageable(0, 100, queryParams));
         return Lists.newArrayList(iter);
     }
 }
