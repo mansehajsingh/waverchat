@@ -5,6 +5,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.PageableFactory;
+import com.waverchat.api.v1.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,26 +51,12 @@ public class UserService extends AbstractApplicationService<User> {
 
         if (queryParams.containsKey("username")) {
             String qUsername = queryParams.get("username");
-
-            if (qUsername.startsWith("*") && qUsername.endsWith("*"))
-                builder.and(qUser.username.contains(qUsername.substring(1, qUsername.length() - 1)));
-            else if (qUsername.startsWith("*"))
-                builder.and(qUser.username.endsWith(qUsername.substring(1)));
-            else if (qUsername.endsWith("*"))
-                builder.and(qUser.username.startsWith(qUsername.substring(0, qUsername.length() - 1)));
-            else builder.and(qUser.username.eq(qUsername));
+            QueryUtil.applyStringQueryWithWildcards(builder, qUser.username, qUsername);
         }
 
         if (queryParams.containsKey("email")) {
             String qEmail = queryParams.get("email");
-
-            if (qEmail.startsWith("*") && qEmail.endsWith("*"))
-                builder.and(qUser.email.contains(qEmail.substring(1, qEmail.length() - 1)));
-            else if (qEmail.startsWith("*"))
-                builder.and(qUser.email.endsWith(qEmail.substring(1)));
-            else if (qEmail.endsWith("*"))
-                builder.and(qUser.email.startsWith(qEmail.substring(0, qEmail.length() - 1)));
-            else builder.and(qUser.email.eq(qEmail));
+            QueryUtil.applyStringQueryWithWildcards(builder, qUser.email, qEmail);
         }
 
         Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
