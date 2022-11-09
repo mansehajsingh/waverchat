@@ -13,15 +13,15 @@ public class QueryUtil {
             String qField
     ) {
         if (qField.startsWith("*") && qField.endsWith("*"))
-            builder.and(stringPath.contains(qField.substring(1, qField.length() - 1)));
+            builder.and(stringPath.containsIgnoreCase(qField.substring(1, qField.length() - 1)));
 
         else if (qField.startsWith("*"))
-            builder.and(stringPath.endsWith(qField.substring(1)));
+            builder.and(stringPath.endsWithIgnoreCase(qField.substring(1)));
 
         else if (qField.endsWith("*"))
-            builder.and(stringPath.startsWith(qField.substring(0, qField.length() - 1)));
+            builder.and(stringPath.startsWithIgnoreCase(qField.substring(0, qField.length() - 1)));
 
-        else builder.and(stringPath.eq(qField));
+        else builder.and(stringPath.equalsIgnoreCase(qField));
     }
 
 }
