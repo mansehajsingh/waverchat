@@ -11,6 +11,7 @@ import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.http.response.MultiMessageResponse;
 import com.waverchat.api.v1.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -177,7 +178,10 @@ public abstract class AbstractApplicationResource<
         }
 
         this.beforeGetAll(pathVariables, queryParams, requestingUser);
-        List<E> queriedEntities = this.service.getAll(pathVariables, queryParams);
+
+        Page<E> queriedEntitiesPage = this.service.getAll(pathVariables, queryParams);
+        List<E> queriedEntities = queriedEntitiesPage.toList();
+
         this.afterGetAll(pathVariables, queryParams, queriedEntities, requestingUser);
 
         // initializing the entity's response factory
@@ -196,8 +200,10 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
 
-        Map<String, List<ViewAllResponseComponent>> responseObj = new HashMap<>();
+        Map<String, Object> responseObj = new HashMap<>();
         responseObj.put("entities", responseBody);
+        responseObj.put("pageCount", queriedEntitiesPage.getTotalPages());
+        responseObj.put("entityCount", queriedEntitiesPage.getTotalElements());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseObj);
     }

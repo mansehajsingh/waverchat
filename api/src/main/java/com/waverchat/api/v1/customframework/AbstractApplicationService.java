@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.customframework;
 
 import com.waverchat.api.v1.exceptions.ConflictException;
+import org.springframework.data.domain.Page;
 
 import java.util.*;
 
@@ -16,6 +17,6 @@ public abstract class AbstractApplicationService<E extends AbstractApplicationEn
         return Optional.empty();
     }
 
-    public List<E> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) { return new ArrayList<E>(); }
+    public Page<E> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) { return Page.empty(); }
 
 }

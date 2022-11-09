@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.applicationresource.user;
 
-import com.google.common.collect.Lists;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
@@ -8,11 +7,10 @@ import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.PageableFactory;
 import com.waverchat.api.v1.util.QueryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,7 +44,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public List<User> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) {
+    public Page<User> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) {
         QUser qUser = QUser.user;
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -62,7 +60,8 @@ public class UserService extends AbstractApplicationService<User> {
         }
 
         Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
-        Iterable<User> iter = userRepository.findAll(builder, pageable);
-        return Lists.newArrayList(iter);
+        Page<User> page = userRepository.findAll(builder, pageable);
+
+        return page;
     }
 }
