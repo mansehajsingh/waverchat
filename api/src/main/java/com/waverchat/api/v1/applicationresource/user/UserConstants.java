@@ -14,6 +14,8 @@ public class UserConstants {
 
     public static final int MAX_PASSWORD_LENGTH = 500;
 
+    public static final int MAX_PAGE_SIZE = 300;
+
     private UserConstants() {}
 
 }

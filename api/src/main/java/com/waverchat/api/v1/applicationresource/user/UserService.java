@@ -63,7 +63,7 @@ public class UserService extends AbstractApplicationService<User> {
             else builder.and(qUser.username.eq(qUsername));
         }
 
-        Pageable pageable = PageableFactory.createPageable(0, 100, queryParams);
+        Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
         Iterable<User> iter = userRepository.findAll(builder, pageable);
         return Lists.newArrayList(iter);
     }

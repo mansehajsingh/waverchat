@@ -9,7 +9,7 @@ public class PageableFactory {
 
     private PageableFactory() {}
 
-    public static Pageable createPageable(int defaultPage, int defaultLimit, Map<String, String> queryParams) {
+    public static Pageable createPageable(int defaultPage, int defaultLimit, Map<String, String> queryParams, int maxLimit) {
         int page = defaultPage, limit = defaultLimit;
 
         if (queryParams.containsKey("page") && queryParams.containsKey("limit")) {
@@ -18,6 +18,8 @@ public class PageableFactory {
         } else if (queryParams.containsKey("limit")) {
             limit = Integer.parseInt(queryParams.get("limit"));
         }
+
+        if (limit > maxLimit) limit = maxLimit;
 
         return PageRequest.of(page, limit);
     }
