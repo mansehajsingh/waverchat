@@ -2,6 +2,7 @@ package com.waverchat.api.v1.applicationresource.user;
 
 import com.google.common.collect.Lists;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.PageableFactory;
@@ -49,14 +50,15 @@ public class UserService extends AbstractApplicationService<User> {
         QUser qUser = QUser.user;
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (queryParams.containsKey("username")) {
-            String qUsername = queryParams.get("username");
-            QueryUtil.applyStringQueryWithWildcards(builder, qUser.username, qUsername);
-        }
+        String [] strFields = {"username", "email", "firstName", "lastName"};
+        StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
 
-        if (queryParams.containsKey("email")) {
-            String qEmail = queryParams.get("email");
-            QueryUtil.applyStringQueryWithWildcards(builder, qUser.email, qEmail);
+        for (int i = 0; i < strFields.length; i++) {
+            String field = strFields[i];
+            if (queryParams.containsKey(field)) {
+                String q = queryParams.get(field);
+                QueryUtil.applyStringQueryWithWildcards(builder, stringPaths[i], q);
+            }
         }
 
         Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
