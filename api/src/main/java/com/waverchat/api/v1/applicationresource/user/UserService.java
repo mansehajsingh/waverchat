@@ -53,14 +53,23 @@ public class UserService extends AbstractApplicationService<User> {
 
             if (qUsername.startsWith("*") && qUsername.endsWith("*"))
                 builder.and(qUser.username.contains(qUsername.substring(1, qUsername.length() - 1)));
-
             else if (qUsername.startsWith("*"))
                 builder.and(qUser.username.endsWith(qUsername.substring(1)));
-
             else if (qUsername.endsWith("*"))
                 builder.and(qUser.username.startsWith(qUsername.substring(0, qUsername.length() - 1)));
-
             else builder.and(qUser.username.eq(qUsername));
+        }
+
+        if (queryParams.containsKey("email")) {
+            String qEmail = queryParams.get("email");
+
+            if (qEmail.startsWith("*") && qEmail.endsWith("*"))
+                builder.and(qUser.email.contains(qEmail.substring(1, qEmail.length() - 1)));
+            else if (qEmail.startsWith("*"))
+                builder.and(qUser.email.endsWith(qEmail.substring(1)));
+            else if (qEmail.endsWith("*"))
+                builder.and(qUser.email.startsWith(qEmail.substring(0, qEmail.length() - 1)));
+            else builder.and(qUser.email.eq(qEmail));
         }
 
         Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
