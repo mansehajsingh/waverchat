@@ -47,17 +47,22 @@ public class UserService extends AbstractApplicationService<User> {
         QUser qUser = QUser.user;
         AppQuery query = new AppQuery();
 
+        // the following fields can be used to query with the supporting string query features
+        // like wildcard support
         String [] strFields = {"username", "email", "firstName", "lastName"};
         StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
 
+        // building the query from each of the fields if the search contains the specified field
         for (int i = 0; i < strFields.length; i++) {
             String field = strFields[i];
             if (queryParams.containsKey(field)) {
+                // if the field is in the query params, add it to our query
                 String q = queryParams.get(field);
                 query.andStringPathWithWildcard(stringPaths[i], q);
             }
         }
 
+        // adding sorting
         String sortByField = UserConstants.DEFAULT_SORT_FIELD;
         boolean sortAscending = UserConstants.DEFAULT_SORT_IS_ASCENDING;
         if (queryParams.containsKey("sortBy") && UserConstants.SUPPORTED_SORT_TAGS.contains(queryParams.get("sortBy")))
