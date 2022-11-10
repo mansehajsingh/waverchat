@@ -1,11 +1,10 @@
 package com.waverchat.api.v1.applicationresource.user;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.PageableFactory;
-import com.waverchat.api.v1.util.QueryUtil;
+import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +45,7 @@ public class UserService extends AbstractApplicationService<User> {
     @Override
     public Page<User> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) {
         QUser qUser = QUser.user;
-        BooleanBuilder builder = new BooleanBuilder();
+        AppQuery query = new AppQuery();
 
         String [] strFields = {"username", "email", "firstName", "lastName"};
         StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
@@ -55,12 +54,21 @@ public class UserService extends AbstractApplicationService<User> {
             String field = strFields[i];
             if (queryParams.containsKey(field)) {
                 String q = queryParams.get(field);
-                QueryUtil.applyStringQueryWithWildcards(builder, stringPaths[i], q);
+                query.andStringPathWithWildcard(stringPaths[i], q);
             }
         }
 
-        Pageable pageable = PageableFactory.createPageable(0, 100, queryParams, UserConstants.MAX_PAGE_SIZE);
-        Page<User> page = userRepository.findAll(builder, pageable);
+        String sortByField = UserConstants.DEFAULT_SORT_FIELD;
+        boolean sortAscending = UserConstants.DEFAULT_SORT_IS_ASCENDING;
+        if (queryParams.containsKey("sortBy") && UserConstants.SUPPORTED_SORT_TAGS.contains(queryParams.get("sortBy")))
+        {
+            sortByField = queryParams.get("sortBy");
+            sortAscending = queryParams.containsKey("sort") && queryParams.get("sort").equalsIgnoreCase("ASC");
+        }
+
+        Pageable pageable = PageableFactory.createPageable(
+                0, 100, sortByField, sortAscending, queryParams, UserConstants.MAX_PAGE_SIZE);
+        Page<User> page = userRepository.findAll(query, pageable);
 
         return page;
     }
