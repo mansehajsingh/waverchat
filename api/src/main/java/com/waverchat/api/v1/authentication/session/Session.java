@@ -1,7 +1,7 @@
 package com.waverchat.api.v1.authentication.session;
 
-import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.applicationresource.user.User;
+import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

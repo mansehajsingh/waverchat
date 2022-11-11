@@ -3,13 +3,10 @@ package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 import com.waverchat.api.v1.applicationresource.user.User;
 import com.waverchat.api.v1.applicationresource.user.UserService;
 import com.waverchat.api.v1.customframework.AbstractApplicationResource;
-import com.waverchat.api.v1.exceptions.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;

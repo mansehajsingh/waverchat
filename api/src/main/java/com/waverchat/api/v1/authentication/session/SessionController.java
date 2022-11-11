@@ -1,14 +1,14 @@
 package com.waverchat.api.v1.authentication.session;
 
 import com.waverchat.api.v1.EnvironmentVariables;
+import com.waverchat.api.v1.applicationresource.user.User;
+import com.waverchat.api.v1.applicationresource.user.UserService;
 import com.waverchat.api.v1.authentication.AuthUtils;
 import com.waverchat.api.v1.authentication.session.http.AllSessionsDeletionRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionResponse;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.http.response.MessageResponse;
-import com.waverchat.api.v1.applicationresource.user.User;
-import com.waverchat.api.v1.applicationresource.user.UserService;
 import com.waverchat.api.v1.util.RequestUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController

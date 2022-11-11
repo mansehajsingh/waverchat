@@ -1,7 +1,7 @@
 package com.waverchat.api.v1.util;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AuthenticatedEndpoint {
 

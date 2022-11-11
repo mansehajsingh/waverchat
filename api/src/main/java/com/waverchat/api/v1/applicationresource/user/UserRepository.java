@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.applicationresource.user;
 
-import com.querydsl.core.types.Predicate;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

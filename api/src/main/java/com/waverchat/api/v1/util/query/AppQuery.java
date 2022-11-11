@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.util.query;
 
-import com.mysema.commons.lang.Pair;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.StringPath;
@@ -9,9 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Map;
 
 public class AppQuery extends InheritableBooleanBuilder {
