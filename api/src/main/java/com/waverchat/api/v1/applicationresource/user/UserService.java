@@ -55,6 +55,9 @@ public class UserService extends AbstractApplicationService<User> {
         // building the query from each of the fields if the search contains the specified field
         query.andAllStringQueries(strFields, stringPaths, queryParams);
 
+        // adding query support for date based searches
+        query.andDefaultDatePathBehaviour(qUser.createdAt, qUser.updatedAt, queryParams);
+
         // adding sorting
         Sort sort = this.createSort(UserConstants.DEFAULT_SORT_IS_ASCENDING, UserConstants.DEFAULT_SORT_FIELD, queryParams);
 
