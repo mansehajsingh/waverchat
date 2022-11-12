@@ -3,8 +3,6 @@ package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
 import com.waverchat.api.v1.applicationresource.usercreationconfirmation.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
-import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
-import com.waverchat.api.v1.exceptions.ValidationException;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -29,7 +27,7 @@ public class UserCreationConfirmationResponseFactory extends ResponseDTOFactory<
             Map<String, Object> requestBody,
             Optional<UUID> requestingUser
     )
-            throws NotImplementedException, ValidationException
+            throws NotImplementedException
     {
         UserCreationConfirmation createdUCC = createdUCCOpt.get();
 
@@ -45,11 +43,9 @@ public class UserCreationConfirmationResponseFactory extends ResponseDTOFactory<
 
     @Override
     public UserCreationConfirmationViewResponse createViewResponse(
-            UUID id, UserCreationConfirmation queriedEntity,
-            Map<String, String> pathVariables, Optional<UUID>
-                    requestingUser
+            UUID id, UserCreationConfirmation queriedEntity, Optional<UUID> requestingUser
     )
-            throws NotImplementedException, NoSuchElementException, ResourceNotFoundException
+            throws NotImplementedException, NoSuchElementException
     {
         UserCreationConfirmationViewResponse responseBody =
                 new UserCreationConfirmationViewResponse("Created user with provided details successfully.");

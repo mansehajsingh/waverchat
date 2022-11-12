@@ -15,6 +15,8 @@ public abstract class AbstractApplicationService<E extends AbstractApplicationEn
 
     public void auditForCreate(E entityToCreate) throws ConflictException {}
 
+    public void auditForEdit(E existingEntity, E candidateEntity) throws ConflictException {}
+
     public Optional<E> create(E entityToCreate) {
         return Optional.empty();
     };
@@ -23,7 +25,11 @@ public abstract class AbstractApplicationService<E extends AbstractApplicationEn
         return Optional.empty();
     }
 
-    public Page<E> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) { return Page.empty(); }
+    public Page<E> getAll(Map<String, String> queryParams) { return Page.empty(); }
+
+    public Optional<E> edit(UUID id, E candidateEntity) {
+        return Optional.empty();
+    }
 
     protected Sort createSort(boolean defaultSortAsc, String defaultSortField, Map<String, String> queryParams) {
         String sortByField = defaultSortField;

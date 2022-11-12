@@ -43,7 +43,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public Page<User> getAll(Map<String, String> pathVariables, Map<String, String> queryParams) {
+    public Page<User> getAll(Map<String, String> queryParams) {
         QUser qUser = QUser.user;
         AppQuery query = new AppQuery();
 

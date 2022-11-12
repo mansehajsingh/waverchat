@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserResource extends AbstractApplicationResource<User, UserService, UserResponseFactory> {
 
     @Override
-    public boolean hasViewAllPermissions(Map<String, String> pathVariables, Map<String, String> queryParams, Optional<UUID> requestingUser) {
+    public boolean hasViewAllPermissions(Map<String, String> queryParams, Optional<UUID> requestingUser) {
         return true;
     }
 

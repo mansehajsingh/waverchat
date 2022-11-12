@@ -19,21 +19,27 @@ public class ResponseDTOFactory<
     public ResponseDTOFactory() {}
 
     public C createCreationResponse(Optional<E> createdEntity, Map<String, Object> requestBody, Optional<UUID> requestingUser)
-            throws NotImplementedException, ValidationException
+            throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createCreationResponseBody method.");
     }
 
-    public V createViewResponse(UUID id, E queriedEntity, Map<String, String> pathVariables, Optional<UUID> requestingUser)
-            throws NotImplementedException, NoSuchElementException, ResourceNotFoundException
+    public V createViewResponse(UUID id, E queriedEntity, Optional<UUID> requestingUser)
+            throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewResponse method.");
     }
 
-    public List<VAC> createViewAllResponse(Map<String, String> pathVariables, Map<String, String> queryParams, List<E> queriedEntities, Optional<UUID> requestingUser)
+    public List<VAC> createViewAllResponse(Map<String, String> queryParams, List<E> queriedEntities, Optional<UUID> requestingUser)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewAllResponse method.");
+    }
+
+    public ED createEditResponse(UUID id, Optional<E> editedEntity, Optional<UUID> requestingUser)
+            throws NotImplementedException
+    {
+        throw new NotImplementedException("Did not implement createEditResponse method.");
     }
 
 }

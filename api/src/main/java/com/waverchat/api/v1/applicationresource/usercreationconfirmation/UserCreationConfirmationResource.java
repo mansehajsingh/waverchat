@@ -26,12 +26,12 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     }
 
     @Override
-    public boolean hasViewPermissions(UUID id, Map<String, String> pathVariables, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
         return true;
     }
 
     @Override
-    public void afterGet(UUID id, Map<String, String> pathVariables, Optional<UserCreationConfirmation> queriedEntity, Optional<UUID> requestingUser) {
+    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, Optional<UUID> requestingUser) {
         if (queriedEntity.isEmpty()) return;
 
         UserCreationConfirmation toDelete = queriedEntity.get();

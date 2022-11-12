@@ -16,13 +16,10 @@ public class UserResponseFactory extends ResponseDTOFactory<
 
     @Override
     public List<UserViewAllResponseComponent> createViewAllResponse(
-            Map<String, String> pathVariables,
             Map<String, String> queryParams,
             List<User> queriedEntities,
             Optional<UUID> requestingUser
-    )
-            throws NotImplementedException
-    {
+    ) {
         List<UserViewAllResponseComponent> responseComponents = new ArrayList<>();
 
         for (User qe : queriedEntities) {
