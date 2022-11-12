@@ -2,10 +2,11 @@ package com.waverchat.api.v1.customframework;
 
 import com.waverchat.api.v1.customframework.dto.*;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
-import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
-import com.waverchat.api.v1.exceptions.ValidationException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ResponseDTOFactory<
         E extends AbstractApplicationEntity,

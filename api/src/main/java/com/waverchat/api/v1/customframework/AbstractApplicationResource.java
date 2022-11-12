@@ -73,7 +73,7 @@ public abstract class AbstractApplicationResource<
 
         // validates the entity body
         try {
-            entityToCreate.validate();
+            entityToCreate.validateForCreate();
         } catch (ValidationException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MultiMessageResponse(e.getMessages()));
         }
@@ -223,48 +223,42 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MessageResponse("Invalid UUID format provided in request parameter."));
         }
 
-        // initializing the entity
-        E candidateEntity;
-        try {
-            candidateEntity = this.createEntityInstance(requestBody);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("There was an error processing the request."));
-        }
-
-
-        // validates the entity body
-        try {
-            candidateEntity.validate();
-        } catch (ValidationException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MultiMessageResponse(e.getMessages()));
-        }
-
-        // check if requesting user has creation permissions
-        if (!this.hasEditPermissions(uuid, candidateEntity, requestingUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to create resource."));
-        }
-
         Optional<E> existingEntityOpt = this.service.getById(uuid);
 
         if (existingEntityOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No resource with id " + uuid + " could be found."));
         }
 
-        E existingEntity = existingEntityOpt.get();
+        E candidateEntity = existingEntityOpt.get();
+
+        candidateEntity.edit(requestBody);
+
+        // validates the entity body
+        try {
+            candidateEntity.validateForEdit();
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MultiMessageResponse(e.getMessages()));
+        }
+
+        // check if requesting user has creation permissions
+        if (!this.hasEditPermissions(uuid, candidateEntity, requestingUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to edit resource."));
+        }
+
+
 
         // checking if creation of the entity would cause any problems
         try {
-            this.service.auditForEdit(existingEntity, candidateEntity);
+            this.service.auditForEdit(candidateEntity);
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
         }
 
 
         // creating the entity
-        this.beforeEdit(uuid, existingEntity, candidateEntity, requestingUser);
+        this.beforeEdit(uuid, candidateEntity, requestingUser);
         Optional<E> editedEntity = this.service.edit(uuid, candidateEntity);
-        this.afterEdit(uuid, existingEntity, editedEntity.get(), requestingUser);
+        this.afterEdit(uuid, editedEntity.get(), requestingUser);
 
         // creating instance of the entity's response factory
         R responseFactory;
@@ -314,9 +308,9 @@ public abstract class AbstractApplicationResource<
         return false;
     }
 
-    public void beforeEdit(UUID id, E existingEntity, E candidateEntity, Optional<UUID> requestingUser) {}
+    public void beforeEdit(UUID id, E candidateEntity, Optional<UUID> requestingUser) {}
 
-    public void afterEdit(UUID id, E existingEntity, E editedEntity, Optional<UUID> requestingUser) {}
+    public void afterEdit(UUID id, E editedEntity, Optional<UUID> requestingUser) {}
 
     public boolean hasDeletePermissions(UUID id, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
         return false;

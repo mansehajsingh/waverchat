@@ -15,7 +15,7 @@ public abstract class AbstractApplicationService<E extends AbstractApplicationEn
 
     public void auditForCreate(E entityToCreate) throws ConflictException {}
 
-    public void auditForEdit(E existingEntity, E candidateEntity) throws ConflictException {}
+    public void auditForEdit(E candidateEntity) throws ConflictException {}
 
     public Optional<E> create(E entityToCreate) {
         return Optional.empty();

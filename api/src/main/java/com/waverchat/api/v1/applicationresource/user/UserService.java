@@ -2,6 +2,7 @@ package com.waverchat.api.v1.applicationresource.user;
 
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
+import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,22 @@ public class UserService extends AbstractApplicationService<User> {
         Page<User> page = this.userRepository.findAll(query, pageable);
 
         return page;
+    }
+
+    @Override
+    public void auditForEdit(User candidateEntity) throws ConflictException {
+
+        Optional<User> existingUsernameOpt =
+                this.userRepository.findByUsernameIgnoreCase(candidateEntity.getUsername());
+
+        if (existingUsernameOpt.isPresent() && !existingUsernameOpt.get().getId().equals(candidateEntity.getId())
+        ) {
+            throw new ConflictException("A user with username " + candidateEntity.getUsername() + " already exists.");
+        }
+    }
+
+    @Override
+    public Optional<User> edit(UUID id, User candidateEntity) {
+        return Optional.of(this.userRepository.save(candidateEntity));
     }
 }

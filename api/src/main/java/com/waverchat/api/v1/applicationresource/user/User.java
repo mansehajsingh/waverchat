@@ -1,7 +1,9 @@
 package com.waverchat.api.v1.applicationresource.user;
 
+import com.waverchat.api.v1.applicationresource.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +16,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(
@@ -69,4 +70,34 @@ public class User extends AbstractApplicationEntity {
         this.setDeleted(deleted);
     }
 
+    @Override
+    public void edit(Map<String, Object> requestBody) {
+        if (requestBody.containsKey("username"))
+            this.username = (String) requestBody.get("username");
+        if (requestBody.containsKey("firstName"))
+            this.firstName = (String) requestBody.get("firstName");
+        if (requestBody.containsKey("lastName"))
+            this.lastName = (String) requestBody.get("lastName");
+    }
+
+    @Override
+    public void validateForEdit() throws ValidationException {
+        List<String> validationExceptionMessages = new ArrayList<>();
+
+        if (!UserCreationConfirmationUtil.isValidUsername(this.getUsername())) {
+            validationExceptionMessages.add("Username is invalid.");
+        }
+        if (!UserCreationConfirmationUtil.isValidFirstName(this.getFirstName())) {
+            validationExceptionMessages.add("First name is invalid.");
+        }
+        if (!UserCreationConfirmationUtil.isValidLastName(this.getLastName())) {
+            validationExceptionMessages.add("Last name is invalid.");
+        }
+
+        // if there were any error messages added during validation we want to throw an exception
+        // containing all those messages
+        if (!validationExceptionMessages.isEmpty()) {
+            throw new ValidationException(validationExceptionMessages);
+        }
+    }
 }

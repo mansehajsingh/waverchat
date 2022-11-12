@@ -17,4 +17,14 @@ public class UserResource extends AbstractApplicationResource<User, UserService,
         return true;
     }
 
+    @Override
+    public boolean hasEditPermissions(UUID id, User candidateEntity, Optional<UUID> requestingUser) {
+        if (!requestingUser.isPresent())
+            return false;
+
+        if (!requestingUser.get().equals(id))
+            return false;
+
+        return true;
+     }
 }

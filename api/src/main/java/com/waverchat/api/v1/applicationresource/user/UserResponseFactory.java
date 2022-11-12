@@ -37,4 +37,27 @@ public class UserResponseFactory extends ResponseDTOFactory<
 
         return responseComponents;
     }
+
+    @Override
+    public UserEditResponse createEditResponse(
+            UUID id,
+            Optional<User> editedEntityOpt,
+            Optional<UUID> requestingUser
+    ) throws NotImplementedException
+    {
+
+        User editedEntity = editedEntityOpt.get();
+
+        UserEditResponse editResponse = new UserEditResponse(
+                editedEntity.getId(),
+                editedEntity.getUsername(),
+                editedEntity.getEmail(),
+                editedEntity.getFirstName(),
+                editedEntity.getLastName(),
+                editedEntity.getCreatedAt(),
+                editedEntity.getUpdatedAt()
+        );
+
+        return editResponse;
+    }
 }

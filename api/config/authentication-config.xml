@@ -6,6 +6,10 @@
                 <method>DELETE</method>
                 <uri>api/v1/sessions</uri>
             </endpoint>
+            <endpoint>
+                <method>PUT</method>
+                <uri>api/v1/users/{}</uri>
+            </endpoint>
         </authenticatedEndpoints>
     </v1>
 </authentication>

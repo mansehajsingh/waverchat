@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, QuerydslPredi
 
     boolean existsByEmailIgnoreCase(String email);
 
+    Optional<User> findByUsernameIgnoreCase(String username);
+
 }

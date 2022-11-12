@@ -72,7 +72,7 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validateForCreate() throws ValidationException {
         List<String> validationExceptionMessages = new ArrayList<>();
 
         // checking if the user provided valid credentials
