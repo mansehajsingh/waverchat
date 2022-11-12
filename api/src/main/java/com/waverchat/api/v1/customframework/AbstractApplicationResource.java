@@ -120,7 +120,6 @@ public abstract class AbstractApplicationResource<
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(
             @PathVariable String id,
-            @RequestBody Map<String, Object> requestBody,
             HttpServletRequest request
     ) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);

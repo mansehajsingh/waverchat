@@ -3,6 +3,7 @@ package com.waverchat.api.v1.applicationresource.user;
 import com.waverchat.api.v1.applicationresource.user.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
+import lombok.val;
 
 import java.util.*;
 
@@ -12,6 +13,21 @@ public class UserResponseFactory extends ResponseDTOFactory<
 
     public UserResponseFactory() {
         super();
+    }
+
+    @Override
+    public UserViewResponse createViewResponse(UUID id, User queriedEntity, Optional<UUID> requestingUser)
+            throws NotImplementedException
+    {
+        return new UserViewResponse(
+                queriedEntity.getId(),
+                queriedEntity.getUsername(),
+                queriedEntity.getEmail(),
+                queriedEntity.getFirstName(),
+                queriedEntity.getLastName(),
+                queriedEntity.getCreatedAt(),
+                queriedEntity.getUpdatedAt()
+        );
     }
 
     @Override
