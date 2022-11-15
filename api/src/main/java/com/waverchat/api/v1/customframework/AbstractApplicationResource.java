@@ -94,7 +94,7 @@ public abstract class AbstractApplicationResource<
 
         // creating the entity
         this.beforeCreate(entityToCreate, requestBody, requestingUser);
-        Optional<E> createdEntity = service.create(entityToCreate);
+        Optional<E> createdEntity = this.service.create(entityToCreate);
         this.afterCreate(createdEntity, requestBody, requestingUser);
 
         // creating instance of the entity's response factory

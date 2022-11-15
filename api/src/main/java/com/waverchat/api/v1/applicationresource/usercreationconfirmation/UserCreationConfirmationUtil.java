@@ -52,12 +52,14 @@ public class UserCreationConfirmationUtil {
 
     public static boolean isValidFirstName(String firstName) {
         if (firstName == null) return false;
-        if (firstName.length() == 0) return false;
+        if (firstName.length() > UserConstants.MAX_FIRST_NAME_LENGTH || firstName.length() < UserConstants.MIN_FIRST_NAME_LENGTH) return false;
         return true;
     }
 
     public static boolean isValidLastName(String lastName) {
-        return !(lastName == null);
+        if (lastName == null) return false;
+        if (lastName.length() > UserConstants.MAX_LAST_NAME_LENGTH) return false;
+        return true;
     }
 
 }

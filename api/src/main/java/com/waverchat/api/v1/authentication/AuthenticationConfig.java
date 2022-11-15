@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.authentication;
 
-import com.waverchat.api.v1.ProgramArgs;
 import com.waverchat.api.v1.util.AuthenticatedEndpoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -16,7 +15,8 @@ public class AuthenticationConfig {
     private Document document;
 
     public AuthenticationConfig() {
-        File authConfXML = new File(ProgramArgs.getAuthenticationConfigPath());
+        String projectPath = System.getProperty("user.dir");
+        File authConfXML = new File(projectPath + "/config/authentication-config.xml");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder docBuilder = dbf.newDocumentBuilder();

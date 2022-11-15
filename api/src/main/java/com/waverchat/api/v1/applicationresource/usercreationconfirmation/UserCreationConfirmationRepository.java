@@ -18,4 +18,7 @@ public interface UserCreationConfirmationRepository extends JpaRepository<UserCr
     boolean existsByEmailIgnoreCase(String email);
 
     void deleteById(UUID uuid);
+
+    Optional<UserCreationConfirmation> findByUsernameIgnoreCase(String username);
+
 }
