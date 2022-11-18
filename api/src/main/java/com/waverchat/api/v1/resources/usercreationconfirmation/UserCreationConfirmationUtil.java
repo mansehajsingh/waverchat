@@ -1,7 +1,7 @@
-package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
+package com.waverchat.api.v1.resources.usercreationconfirmation;
 
 
-import com.waverchat.api.v1.applicationresource.user.UserConstants;
+import com.waverchat.api.v1.resources.user.UserConstants;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

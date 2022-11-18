@@ -1,6 +1,6 @@
-package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
+package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.applicationresource.usercreationconfirmation.dto.*;
+import com.waverchat.api.v1.resources.usercreationconfirmation.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
 

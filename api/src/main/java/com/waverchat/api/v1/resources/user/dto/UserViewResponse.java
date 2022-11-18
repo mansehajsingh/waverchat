@@ -1,6 +1,6 @@
-package com.waverchat.api.v1.applicationresource.user.dto;
+package com.waverchat.api.v1.resources.user.dto;
 
-import com.waverchat.api.v1.customframework.dto.EditResponse;
+import com.waverchat.api.v1.customframework.dto.ViewResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class UserEditResponse extends EditResponse {
+public class UserViewResponse extends ViewResponse {
 
     private UUID id;
 

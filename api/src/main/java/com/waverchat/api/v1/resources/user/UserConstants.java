@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.applicationresource.user;
+package com.waverchat.api.v1.resources.user;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 

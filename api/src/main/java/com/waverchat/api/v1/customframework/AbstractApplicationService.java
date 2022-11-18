@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.customframework;
 
-import com.waverchat.api.v1.applicationresource.user.UserConstants;
+import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

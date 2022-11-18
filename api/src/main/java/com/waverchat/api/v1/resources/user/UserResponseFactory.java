@@ -1,9 +1,8 @@
-package com.waverchat.api.v1.applicationresource.user;
+package com.waverchat.api.v1.resources.user;
 
-import com.waverchat.api.v1.applicationresource.user.dto.*;
+import com.waverchat.api.v1.resources.user.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
-import lombok.val;
 
 import java.util.*;
 

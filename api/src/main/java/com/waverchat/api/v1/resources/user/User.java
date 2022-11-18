@@ -1,6 +1,7 @@
-package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
+package com.waverchat.api.v1.resources.user;
 
-import com.waverchat.api.v1.applicationresource.user.UserConstants;
+import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
+import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.AllArgsConstructor;
@@ -8,28 +9,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(
-        name = "user_creation_confirmations",
+        name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username")
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
         }
 )
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationConfirmation extends AbstractApplicationEntity {
+public class User extends AbstractApplicationEntity {
 
     @NotNull
     private String email;
@@ -61,27 +58,33 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
     @NotNull
     private boolean deleted = false;
 
-    public UserCreationConfirmation(Map<String, Object> requestBody) {
-        this.email = (String) requestBody.get("email");
-        this.username = (String) requestBody.get("username");
-        this.password = (String) requestBody.get("password");
-        this.firstName = (String) requestBody.get("firstName");
-        this.lastName = (String) requestBody.get("lastName");
-        this.superUser = false;
-        this.deleted = false;
+    @OneToMany(mappedBy = "user")
+    private Set<Session> sessions = new HashSet<>();
+
+    public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setPasswordHash(passwordHash);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setSuperUser(superUser);
+        this.setDeleted(deleted);
     }
 
     @Override
-    public void validateForCreate() throws ValidationException {
+    public void edit(Map<String, Object> requestBody) {
+        if (requestBody.containsKey("username"))
+            this.username = (String) requestBody.get("username");
+        if (requestBody.containsKey("firstName"))
+            this.firstName = (String) requestBody.get("firstName");
+        if (requestBody.containsKey("lastName"))
+            this.lastName = (String) requestBody.get("lastName");
+    }
+
+    @Override
+    public void validateForEdit() throws ValidationException {
         List<String> validationExceptionMessages = new ArrayList<>();
 
-        // checking if the user provided valid credentials
-        if (!UserCreationConfirmationUtil.isValidEmail(this.getEmail())) {
-            validationExceptionMessages.add("Email is invalid");
-        }
-        if (!UserCreationConfirmationUtil.isValidPassword(this.getPassword())) {
-            validationExceptionMessages.add("Password is invalid");
-        }
         if (!UserCreationConfirmationUtil.isValidUsername(this.getUsername())) {
             validationExceptionMessages.add("Username is invalid.");
         }
@@ -98,5 +101,4 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
             throw new ValidationException(validationExceptionMessages);
         }
     }
-
 }

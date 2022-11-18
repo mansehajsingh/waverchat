@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.authentication.session;
 
-import com.waverchat.api.v1.applicationresource.user.User;
+import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

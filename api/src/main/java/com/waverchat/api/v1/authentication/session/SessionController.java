@@ -1,9 +1,8 @@
 package com.waverchat.api.v1.authentication.session;
 
 import com.waverchat.api.v1.EnvironmentVariablesAccessor;
-import com.waverchat.api.v1.EnvironmentVariablesAccessor;
-import com.waverchat.api.v1.applicationresource.user.User;
-import com.waverchat.api.v1.applicationresource.user.UserService;
+import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.user.UserService;
 import com.waverchat.api.v1.authentication.AuthUtils;
 import com.waverchat.api.v1.authentication.session.http.AllSessionsDeletionRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationRequest;

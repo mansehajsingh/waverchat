@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.applicationresource.user;
+package com.waverchat.api.v1.resources.user;
 
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;

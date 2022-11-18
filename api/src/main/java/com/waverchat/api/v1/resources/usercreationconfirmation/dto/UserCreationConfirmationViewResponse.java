@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.applicationresource.usercreationconfirmation.dto;
+package com.waverchat.api.v1.resources.usercreationconfirmation.dto;
 
 import com.waverchat.api.v1.customframework.dto.ViewResponse;
 import lombok.AllArgsConstructor;

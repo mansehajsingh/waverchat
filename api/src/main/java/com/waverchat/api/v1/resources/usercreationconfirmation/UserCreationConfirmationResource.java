@@ -1,7 +1,7 @@
-package com.waverchat.api.v1.applicationresource.usercreationconfirmation;
+package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.applicationresource.user.User;
-import com.waverchat.api.v1.applicationresource.user.UserService;
+import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.user.UserService;
 import com.waverchat.api.v1.customframework.AbstractApplicationResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

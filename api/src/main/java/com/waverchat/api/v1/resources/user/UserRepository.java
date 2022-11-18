@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.applicationresource.user;
+package com.waverchat.api.v1.resources.user;
 
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.data.domain.Page;
