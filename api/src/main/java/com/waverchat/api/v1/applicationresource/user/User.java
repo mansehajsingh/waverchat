@@ -9,10 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -41,6 +38,10 @@ public class User extends AbstractApplicationEntity {
     @NotNull
     @NotEmpty
     private String passwordHash;
+
+    // Does not exist in db, only used at the service level
+    @Transient
+    private String password;
 
     @NotNull
     @NotBlank

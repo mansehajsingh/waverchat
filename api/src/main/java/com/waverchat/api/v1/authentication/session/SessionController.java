@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.authentication.session;
 
-import com.waverchat.api.v1.EnvironmentVariables;
+import com.waverchat.api.v1.EnvironmentVariablesAccessor;
+import com.waverchat.api.v1.EnvironmentVariablesAccessor;
 import com.waverchat.api.v1.applicationresource.user.User;
 import com.waverchat.api.v1.applicationresource.user.UserService;
 import com.waverchat.api.v1.authentication.AuthUtils;
@@ -66,7 +67,7 @@ public class SessionController {
         String refreshToken = AuthUtils.issueRefreshToken(session.getId(), user.getId());
 
         Cookie cookie = new Cookie("waverchat_session", refreshToken);
-        cookie.setSecure(Boolean.parseBoolean(EnvironmentVariables.get("useHttps")));
+        cookie.setSecure(Boolean.parseBoolean(new EnvironmentVariablesAccessor().get("useHttps")));
         cookie.setHttpOnly(true);
         cookie.setPath("/api/v1/sessions/refresh");
         cookie.setMaxAge(60 * 60 * 24 * 365 * 10); // 10 years

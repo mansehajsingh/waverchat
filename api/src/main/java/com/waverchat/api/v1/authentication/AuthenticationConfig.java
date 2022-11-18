@@ -16,6 +16,7 @@ public class AuthenticationConfig {
 
     public AuthenticationConfig() {
         String projectPath = System.getProperty("user.dir");
+        if (!projectPath.endsWith("api")) projectPath += "/api";
         File authConfXML = new File(projectPath + "/config/authentication-config.xml");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {

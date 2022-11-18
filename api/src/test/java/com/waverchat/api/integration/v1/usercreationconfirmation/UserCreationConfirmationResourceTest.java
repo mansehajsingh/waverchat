@@ -1,6 +1,9 @@
 package com.waverchat.api.integration.v1.usercreationconfirmation;
 
 import com.google.gson.Gson;
+import com.mysema.commons.lang.Pair;
+import com.waverchat.api.integration.v1.util.App;
+import com.waverchat.api.integration.v1.util.TestUtils;
 import com.waverchat.api.v1.applicationresource.user.User;
 import com.waverchat.api.v1.applicationresource.user.UserConstants;
 import com.waverchat.api.v1.applicationresource.user.UserRepository;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserCreationConfirmationResourceTest {
 
     @Autowired
@@ -45,209 +50,121 @@ public class UserCreationConfirmationResourceTest {
     @Autowired
     private UserRepository userRepository;
 
-    protected static boolean createdExampleUCC = false;
-
-    protected static boolean createdExampleUser = false;
-
-    protected static final String CREATED_UCC_EMAIL = "example@email.com";
-    protected static final String CREATED_UCC_USERNAME = "example";
-    protected static final String CREATED_UCC_FIRST_NAME = "Example";
-    protected static final String CREATED_UCC_LAST_NAME = "";
-    protected static final String CREATED_UCC_PASSWORD = "@password123";
-
-    protected static final String CREATED_USER_EMAIL = "existinguser@email.com";
-    protected static final String CREATED_USER_USERNAME = "existing_user";
-    protected static final String CREATED_USER_FIRST_NAME = "Existing";
-    protected static final String CREATED_USER_LAST_NAME = "User";
-    protected static final String CREATED_USER_PASSWORD = "@password123";
-
-    private Map<String, Object> produceUCCCreateRequestBody(String email, String username, String firstName, String lastName, String password) {
-        Map<String, Object> requestBody = new HashMap<>();
-
-        requestBody.put("email", email);
-        requestBody.put("username", username);
-        requestBody.put("firstName", firstName);
-        requestBody.put("lastName", lastName);
-        requestBody.put("password", password);
-
-        return requestBody;
-    }
-
-    private ResultActions sendUCC(Map<String, Object> requestBody) throws Exception {
-        Gson gson = new Gson();
-        String json = gson.toJson(requestBody);
-        return this.mockMvc.perform(
-                post("/api/v1/user-creation-confirmations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json));
-    }
-
-    private String produceStringOfLength(int length, char c) {
-        char[] chars = new char[length];
-        Arrays.fill(chars, c);
-        return new String(chars);
-    }
-
-    @Before
-    public void createExampleUserCreationConfirmation() {
-
-        if (createdExampleUCC) return;
-
-        String hashedPassword = BCrypt.hashpw(CREATED_UCC_PASSWORD, BCrypt.gensalt());
-
-        UserCreationConfirmation userCreationConfirmation = new UserCreationConfirmation(
-                CREATED_UCC_EMAIL,
-                CREATED_UCC_USERNAME,
-                hashedPassword,
-                "",
-                CREATED_UCC_FIRST_NAME,
-                CREATED_UCC_LAST_NAME,
-                false,
-                false
-        );
-
-        this.userCreationConfirmationRepository.save(userCreationConfirmation);
-
-        createdExampleUCC = true;
-    }
-
-    @Before
-    public void createExampleUser() {
-        if (createdExampleUser) return;
-
-        String hashedPassword = BCrypt.hashpw(CREATED_USER_PASSWORD, BCrypt.gensalt());
-
-        User user = new User(
-                CREATED_USER_EMAIL,
-                CREATED_USER_USERNAME,
-                hashedPassword,
-                CREATED_USER_FIRST_NAME,
-                CREATED_USER_LAST_NAME,
-                false,
-                false
-        );
-
-        this.userRepository.save(user);
-
-        createdExampleUser = true;
-    }
-
     @Test
-    public void checkCreateResponse() throws Exception {
-        Map<String, Object> requestBody = this
-                .produceUCCCreateRequestBody("user@email.com", "username", "First", "Last", "@password123");
+    public void checkCreateResponseAndUCCPersistedCorrectly() throws Exception {
 
-        MvcResult creationResult = this.sendUCC(requestBody)
-                .andExpect(status().isCreated())
-                .andReturn();
+        Pair<UserCreationConfirmation, ResultActions> genPair = App.generateAndSendUserCreationConfirmation(
+                new UserCreationConfirmation(), this.mockMvc);
+
+        UserCreationConfirmation generatedUCC = genPair.getFirst();
+        ResultActions creationResult = genPair.getSecond();
+
+        creationResult.andExpect(status().isCreated());
 
         Gson gson = new Gson();
 
         Map<String, String> response =
-                gson.fromJson(creationResult.getResponse().getContentAsString(), Map.class);
-
+                gson.fromJson(creationResult.andReturn().getResponse().getContentAsString(), Map.class);
 
         assert response.containsKey("email");
-        assertEquals(requestBody.get("email"), response.get("email"));
+        assertEquals(generatedUCC.getEmail(), response.get("email"));
 
         assert response.containsKey("username");
-        assertEquals(requestBody.get("username"), response.get("username"));
+        assertEquals(generatedUCC.getUsername(), response.get("username"));
 
         assert response.containsKey("firstName");
-        assertEquals(requestBody.get("firstName"), response.get("firstName"));
+        assertEquals(generatedUCC.getFirstName(), response.get("firstName"));
 
         assert response.containsKey("lastName");
-        assertEquals(requestBody.get("lastName"), response.get("lastName"));
-    }
+        assertEquals(generatedUCC.getLastName(), response.get("lastName"));
 
-    @Test
-    public void checkUserCreationConfirmationPersistedCorrectly() {
-        Optional<UserCreationConfirmation> uccOpt = this.userCreationConfirmationRepository.findByUsernameIgnoreCase("example");
+        Optional<UserCreationConfirmation> uccOpt =
+                this.userCreationConfirmationRepository.findByUsernameIgnoreCase(generatedUCC.getUsername());
 
         assert uccOpt.isPresent();
 
         UserCreationConfirmation createdUCC = uccOpt.get();
 
-        assertEquals(CREATED_UCC_EMAIL, createdUCC.getEmail());
-        assertEquals(CREATED_UCC_USERNAME, createdUCC.getUsername());
-        assertEquals(CREATED_UCC_FIRST_NAME, createdUCC.getFirstName());
-        assertEquals(CREATED_UCC_LAST_NAME, createdUCC.getLastName());
+        assertEquals(generatedUCC.getEmail(), createdUCC.getEmail());
+        assertEquals(generatedUCC.getUsername(), createdUCC.getUsername());
+        assertEquals(generatedUCC.getFirstName(), createdUCC.getFirstName());
+        assertEquals(generatedUCC.getLastName(), createdUCC.getLastName());
 
-        assert BCrypt.checkpw(CREATED_UCC_PASSWORD, createdUCC.getPasswordHash());
+        assert BCrypt.checkpw(generatedUCC.getPassword(), createdUCC.getPasswordHash());
     }
 
     @Test
     public void createUCC_verifyUCC_checkUCCDeletedAndUserPersistedCorrectly() throws Exception {
-        String email = "verified@email.com", username = "verified", firstName = "Verified", lastName = "", password = "@password123";
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                email, username, firstName, lastName, password
-        );
-        this.sendUCC(requestBody);
+        UserCreationConfirmation ucc = App
+                .generateAndSendUserCreationConfirmation(new UserCreationConfirmation(), this.mockMvc)
+                .getFirst();
 
         // creating a second ucc with same email, both should be deleted when confirming the ucc
-        Map<String, Object> requestBodyWithSameEmail = this.produceUCCCreateRequestBody(
-                email, "verified2", firstName, lastName, password
-        );
-        this.sendUCC(requestBodyWithSameEmail);
+        UserCreationConfirmation uccWithSameEmail = new UserCreationConfirmation();
+        uccWithSameEmail.setEmail(ucc.getEmail());
+        ResultActions sameEmailCreateResult = App.generateAndSendUserCreationConfirmation(uccWithSameEmail, this.mockMvc).getSecond();
 
-        UserCreationConfirmation createdUcc = this.userCreationConfirmationRepository.findByUsernameIgnoreCase(username).get();
+        sameEmailCreateResult.andExpect(status().isCreated());
+
+        UserCreationConfirmation createdUcc = this.userCreationConfirmationRepository.findByUsernameIgnoreCase(ucc.getUsername()).get();
         String idAsString = createdUcc.getId().toString();
-        this.mockMvc.perform(
-                get("/api/v1/user-creation-confirmations/" + idAsString))
+
+        App.verifyUserCreationConfirmation(idAsString, this.mockMvc)
                 .andExpect(status().isOk());
 
         // checking that all the uccs were deleted with this email
-        assertFalse(this.userCreationConfirmationRepository.existsByEmailIgnoreCase(email));
+        assertFalse(this.userCreationConfirmationRepository.existsByEmailIgnoreCase(ucc.getEmail()));
 
-        Optional<User> userOpt = this.userRepository.findByUsernameIgnoreCase(username);
+        Optional<User> userOpt = this.userRepository.findByUsernameIgnoreCase(ucc.getUsername());
 
         assert userOpt.isPresent();
 
         User user = userOpt.get();
 
-        assertEquals(email, user.getEmail());
-        assertEquals(username, user.getUsername());
-        assertEquals(firstName, user.getFirstName());
-        assertEquals(lastName, user.getLastName());
+        assertEquals(ucc.getEmail(), user.getEmail());
+        assertEquals(ucc.getUsername(), user.getUsername());
+        assertEquals(ucc.getFirstName(), user.getFirstName());
+        assertEquals(ucc.getLastName(), user.getLastName());
 
-        assert BCrypt.checkpw(password, user.getPasswordHash());
+        assert BCrypt.checkpw(ucc.getPassword(), user.getPasswordHash());
     }
 
     @Test
     public void attemptUsernameConflictWithExistingUCC() throws Exception {
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                "failed@email.com", CREATED_UCC_USERNAME, "failed", "failed", "@password123");
+        Pair<UserCreationConfirmation, ResultActions> uccRaPair = App.generateAndSendUserCreationConfirmation(new UserCreationConfirmation(),
+                this.mockMvc);
 
-        this.sendUCC(requestBody).andExpect(status().isConflict());
+        UserCreationConfirmation original = uccRaPair.getFirst();
+        ResultActions originalCreateResult = uccRaPair.getSecond();
+
+        originalCreateResult.andExpect(status().isCreated());
+
+        UserCreationConfirmation conflict = new UserCreationConfirmation();
+        conflict.setUsername(original.getUsername());
+
+        ResultActions conflictResult = App.generateAndSendUserCreationConfirmation(conflict, this.mockMvc).getSecond();
+
+        conflictResult.andExpect(status().isConflict());
     }
 
     @Test
-    public void attemptUserNameConflictWithExistingUser() throws Exception {
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                "failed@email.com", CREATED_USER_USERNAME, "failed", "failed", "@password123"
-        );
+    public void attemptUCCEmailConflictWithExistingUser() throws Exception {
+        User existingUser = App.generateAndPersistUser(new User(), this.userRepository);
 
-        this.sendUCC(requestBody).andExpect(status().isConflict());
-    }
+        UserCreationConfirmation conflict = new UserCreationConfirmation();
+        conflict.setEmail(existingUser.getEmail());
 
-    @Test
-    public void attemptEmailConflictWithExistingUser() throws Exception {
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                CREATED_USER_EMAIL, "failed", "failed", "failed", "@password123"
-        );
-
-        this.sendUCC(requestBody).andExpect(status().isConflict());
+        App.generateAndSendUserCreationConfirmation(conflict, this.mockMvc)
+                .getSecond().andExpect(status().isConflict());
     }
 
     @Test
     public void attemptCreateUCCWithInvalidEmail() throws Exception {
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                "invalid", "failed", "failed", "failed", "@password123"
-        );
+        UserCreationConfirmation invalid = new UserCreationConfirmation();
+        invalid.setEmail("invalid");
 
-        MvcResult result = this.sendUCC(requestBody)
-                .andExpect(status().isUnprocessableEntity())
-                .andReturn();
+        MvcResult result = App.generateAndSendUserCreationConfirmation(invalid, this.mockMvc)
+                .getSecond().andExpect(status().isUnprocessableEntity()).andReturn();
 
         Gson gson = new Gson();
 
@@ -267,10 +184,12 @@ public class UserCreationConfirmationResourceTest {
         }
 
         SendUCCWithInvalidUsernameFunction checkInvalidUsernameUCC = (invalidVal) -> {
-            Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                    "failed@email.com", invalidVal, "failed", "failed", "@password123");
-            MvcResult result = this.sendUCC(requestBody)
-                    .andExpect(status().isUnprocessableEntity()).andReturn();
+            UserCreationConfirmation invalid = new UserCreationConfirmation();
+            invalid.setUsername(invalidVal);
+
+            MvcResult result = App.generateAndSendUserCreationConfirmation(invalid, this.mockMvc)
+                    .getSecond().andReturn();
+
             Map<String, List<String>> response =
                     gson.fromJson(result.getResponse().getContentAsString(), Map.class);
 
@@ -279,12 +198,12 @@ public class UserCreationConfirmationResourceTest {
         };
 
         // username under the valid number of characters
-        String tooShortVal = this.produceStringOfLength(UserConstants.MIN_USERNAME_LENGTH - 1, 'a');
+        String tooShortVal = TestUtils.randStringOfLength(UserConstants.MIN_USERNAME_LENGTH - 1);
         checkInvalidUsernameUCC.run(tooShortVal);
 
 
         // username greater than the valid number of characters
-        String tooLongVal = this.produceStringOfLength(UserConstants.MAX_USERNAME_LENGTH + 1, 'a');
+        String tooLongVal = TestUtils.randStringOfLength(UserConstants.MAX_USERNAME_LENGTH + 1);
         checkInvalidUsernameUCC.run(tooLongVal);
 
         // username with space
@@ -300,10 +219,12 @@ public class UserCreationConfirmationResourceTest {
         }
 
         SendUCCWithInvalidFirstNameFunction checkInvalidFirstNameUCC = (invalidVal) -> {
-            Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                    "failed@email.com", "failed", invalidVal, "failed", "@password123");
-            MvcResult result = this.sendUCC(requestBody)
-                    .andExpect(status().isUnprocessableEntity()).andReturn();
+            UserCreationConfirmation invalid = new UserCreationConfirmation();
+            invalid.setFirstName(invalidVal);
+
+            MvcResult result = App.generateAndSendUserCreationConfirmation(invalid, this.mockMvc)
+                    .getSecond().andReturn();
+
             Map<String, List<String>> response =
                     gson.fromJson(result.getResponse().getContentAsString(), Map.class);
 
@@ -315,11 +236,11 @@ public class UserCreationConfirmationResourceTest {
         checkInvalidFirstNameUCC.run("");
 
         // too short first name
-        String tooShortVal = this.produceStringOfLength(UserConstants.MIN_FIRST_NAME_LENGTH - 1, 'a');
+        String tooShortVal = TestUtils.randStringOfLength(UserConstants.MIN_FIRST_NAME_LENGTH - 1);
         checkInvalidFirstNameUCC.run(tooShortVal);
 
         // too long first name
-        String tooLongVal = this.produceStringOfLength(UserConstants.MAX_FIRST_NAME_LENGTH + 1, 'a');
+        String tooLongVal = TestUtils.randStringOfLength(UserConstants.MAX_FIRST_NAME_LENGTH + 1);
         checkInvalidFirstNameUCC.run(tooLongVal);
     }
 
@@ -328,12 +249,16 @@ public class UserCreationConfirmationResourceTest {
         Gson gson = new Gson();
 
         // send too long last name
-        String tooLongVal = this.produceStringOfLength(UserConstants.MAX_LAST_NAME_LENGTH + 1, 'a');
-        Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                "failed@email.com", "failed", "failed", tooLongVal, "@password123");
+        String tooLongVal = TestUtils.randStringOfLength(UserConstants.MAX_LAST_NAME_LENGTH + 1);
+        UserCreationConfirmation invalid = new UserCreationConfirmation();
+        invalid.setLastName(tooLongVal);
 
-        Map<String, List<String>> response = gson.fromJson(this.sendUCC(requestBody).andExpect(status().isUnprocessableEntity())
-                .andReturn().getResponse().getContentAsString(), Map.class);
+        String jsonResp = App.generateAndSendUserCreationConfirmation(invalid, this.mockMvc)
+                .getSecond()
+                .andExpect(status().isUnprocessableEntity())
+                .andReturn().getResponse().getContentAsString();
+
+        Map<String, List<String>> response = gson.fromJson(jsonResp, Map.class);
 
         assert response.containsKey("messages");
         assertEquals(1, response.get("messages").size());
@@ -348,33 +273,35 @@ public class UserCreationConfirmationResourceTest {
         }
 
         SendUCCWithInvalidPasswordFunction checkInvalidPasswordUCC = (invalidVal) -> {
-            Map<String, Object> requestBody = this.produceUCCCreateRequestBody(
-                    "failed@email.com", "failed", "failed", "failed", invalidVal);
-            MvcResult result = this.sendUCC(requestBody)
-                    .andExpect(status().isUnprocessableEntity()).andReturn();
-            Map<String, List<String>> response =
-                    gson.fromJson(result.getResponse().getContentAsString(), Map.class);
+            UserCreationConfirmation invalid = new UserCreationConfirmation();
+            invalid.setPassword(invalidVal);
+
+            String jsonResp = App.generateAndSendUserCreationConfirmation(invalid, this.mockMvc)
+                    .getSecond().andExpect(status().isUnprocessableEntity())
+                    .andReturn().getResponse().getContentAsString();
+
+            Map<String, List<String>> response =gson.fromJson(jsonResp, Map.class);
 
             assert response.containsKey("messages");
             assertEquals(1, response.get("messages").size());
         };
 
         // password with no special chars
-        String noSpecialChars = this.produceStringOfLength(UserConstants.MIN_PASSWORD_LENGTH + 1, 'a');
+        String noSpecialChars = TestUtils.randStringOfLength(UserConstants.MIN_PASSWORD_LENGTH + 1);
         noSpecialChars += "1";
         checkInvalidPasswordUCC.run(noSpecialChars);
 
         // password with no numbers
-        String noNumbers = this.produceStringOfLength(UserConstants.MIN_PASSWORD_LENGTH + 1, 'a');
+        String noNumbers = TestUtils.randStringOfLength(UserConstants.MIN_PASSWORD_LENGTH + 1);
         noNumbers += "@";
         checkInvalidPasswordUCC.run(noNumbers);
 
-        // password too short
+        // password too short, but still contains all required char types
         String tooShort = "@a1";
         checkInvalidPasswordUCC.run(tooShort);
 
         // password too long
-        String tooLong = this.produceStringOfLength(UserConstants.MAX_PASSWORD_LENGTH, 'a');
+        String tooLong = TestUtils.randStringOfLength(UserConstants.MAX_PASSWORD_LENGTH);
         tooLong += "@1";
         checkInvalidPasswordUCC.run(tooLong);
     }

@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.authentication;
 
-import com.waverchat.api.v1.EnvironmentVariables;
+import com.waverchat.api.v1.EnvironmentVariablesAccessor;
 import com.waverchat.api.v1.authentication.session.SessionConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +20,8 @@ public class AuthUtils {
         ANONYMOUS_USER,
     }
 
+    private static EnvironmentVariablesAccessor environmentVariablesAccessor = new EnvironmentVariablesAccessor();
+
     private AuthUtils() {}
 
     public static String issueAccessToken(UUID sessionId, UUID userId) {
@@ -32,7 +34,7 @@ public class AuthUtils {
 
         // fetching the key from the environment variables
         byte[] decodedKey = Base64.getDecoder()
-                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+                .decode(environmentVariablesAccessor.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
         Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
 
         // creating the access token
@@ -57,7 +59,7 @@ public class AuthUtils {
 
         // fetching the key from the environment variables
         byte[] decodedKey = Base64.getDecoder()
-                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+                .decode(environmentVariablesAccessor.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
         Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
 
         String refreshToken = Jwts.builder()
@@ -74,7 +76,7 @@ public class AuthUtils {
     public static Claims getClaimsFromToken(String token) throws SignatureException, MalformedJwtException {
         // fetching the signing key
         byte[] decodedKey = Base64.getDecoder()
-                .decode(EnvironmentVariables.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
+                .decode(environmentVariablesAccessor.get(SessionConstants.TOKEN_SECRET_KEY_ENV));
         Key key = new SecretKeySpec(decodedKey, 0, decodedKey.length, SessionConstants.SIGNING_ALGORITHM);
 
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
