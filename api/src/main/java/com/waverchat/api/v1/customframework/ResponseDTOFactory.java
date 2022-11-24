@@ -19,25 +19,25 @@ public class ResponseDTOFactory<
 
     public ResponseDTOFactory() {}
 
-    public C createCreationResponse(Optional<E> createdEntity, Map<String, Object> requestBody, Optional<UUID> requestingUser)
+    public C createCreationResponse(Optional<E> createdEntity, RequestProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createCreationResponseBody method.");
     }
 
-    public V createViewResponse(UUID id, E queriedEntity, Optional<UUID> requestingUser)
+    public V createViewResponse(UUID id, E queriedEntity, RequestProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewResponse method.");
     }
 
-    public List<VAC> createViewAllResponse(Map<String, String> queryParams, List<E> queriedEntities, Optional<UUID> requestingUser)
+    public List<VAC> createViewAllResponse(List<E> queriedEntities, RequestProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewAllResponse method.");
     }
 
-    public ED createEditResponse(UUID id, Optional<E> editedEntity, Optional<UUID> requestingUser)
+    public ED createEditResponse(UUID id, Optional<E> editedEntity, RequestProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createEditResponse method.");

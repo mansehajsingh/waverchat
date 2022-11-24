@@ -2,6 +2,7 @@ package com.waverchat.api.v1.resources.user;
 
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.query.AppQuery;
@@ -44,7 +45,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public Page<User> getAll(Map<String, String> queryParams) {
+    public Page<User> getAll(RequestProperties props) {
         QUser qUser = QUser.user;
         AppQuery query = new AppQuery();
 
@@ -54,16 +55,17 @@ public class UserService extends AbstractApplicationService<User> {
         StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
 
         // building the query from each of the fields if the search contains the specified field
-        query.andAllStringQueries(strFields, stringPaths, queryParams);
+        query.andAllStringQueries(strFields, stringPaths,props.getQueryParams());
 
         // adding query support for date based searches
-        query.andDefaultDatePathBehaviour(qUser.createdAt, qUser.updatedAt, queryParams);
+        query.andDefaultDatePathBehaviour(qUser.createdAt, qUser.updatedAt, props.getQueryParams());
 
         // adding sorting
-        Sort sort = this.createSort(UserConstants.DEFAULT_SORT_IS_ASCENDING, UserConstants.DEFAULT_SORT_FIELD, queryParams);
+        Sort sort = this.createSort(UserConstants.DEFAULT_SORT_IS_ASCENDING,
+                UserConstants.DEFAULT_SORT_FIELD, props.getQueryParams());
 
         Pageable pageable = this.createPageable(
-                0, 100, UserConstants.MAX_PAGE_SIZE, sort, queryParams);
+                0, 100, UserConstants.MAX_PAGE_SIZE, sort, props.getQueryParams());
         Page<User> page = this.userRepository.findAll(query, pageable);
 
         return page;

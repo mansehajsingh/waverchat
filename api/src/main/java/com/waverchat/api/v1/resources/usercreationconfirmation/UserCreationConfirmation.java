@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
@@ -61,12 +62,12 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
     @NotNull
     private boolean deleted = false;
 
-    public UserCreationConfirmation(Map<String, Object> requestBody) {
-        this.email = (String) requestBody.get("email");
-        this.username = (String) requestBody.get("username");
-        this.password = (String) requestBody.get("password");
-        this.firstName = (String) requestBody.get("firstName");
-        this.lastName = (String) requestBody.get("lastName");
+    public UserCreationConfirmation(RequestProperties props) {
+        this.email = (String) props.getRequestBody().get("email");
+        this.username = (String) props.getRequestBody().get("username");
+        this.password = (String) props.getRequestBody().get("password");
+        this.firstName = (String) props.getRequestBody().get("firstName");
+        this.lastName = (String) props.getRequestBody().get("lastName");
         this.superUser = false;
         this.deleted = false;
     }

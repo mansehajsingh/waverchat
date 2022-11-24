@@ -40,16 +40,18 @@ public abstract class AbstractApplicationResource<
         return rfCtor.newInstance();
     }
 
-    private E createEntityInstance(Map<String, Object> requestBody) throws Exception {
+    private E createEntityInstance(RequestProperties props) throws Exception {
         Class<E> entityType = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
-        Constructor<E> eCtor = entityType.getConstructor(Map.class);
-        return eCtor.newInstance(requestBody);
+        Constructor<E> eCtor = entityType.getConstructor(RequestProperties.class);
+        return eCtor.newInstance(props);
     }
 
     @PostMapping(consumes={MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> create(
             @RequestBody Map<String, Object> requestBody,
+            @PathVariable Map<String, String> pathVars,
+            @RequestParam Map<String, String> queryParams,
             HttpServletRequest request,
             HttpServletResponse response
     )
@@ -60,11 +62,16 @@ public abstract class AbstractApplicationResource<
     {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
+        RequestProperties props = new RequestProperties();
+        props.setPathVariableIds(pathVars);
+        props.setRequestBody(requestBody);
+        props.setRequestingUserId(requestingUser);
+        props.setQueryParameters(queryParams);
 
         // initializing the entity
         E entityToCreate;
         try {
-            entityToCreate = this.createEntityInstance(requestBody);
+            entityToCreate = this.createEntityInstance(props);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("There was an error processing the request."));
@@ -79,7 +86,7 @@ public abstract class AbstractApplicationResource<
         }
 
         // check if requesting user has creation permissions
-        if (!this.hasCreatePermissions(entityToCreate, requestBody, requestingUser)) {
+        if (!this.hasCreatePermissions(entityToCreate, props)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to create resource."));
         }
 
@@ -93,9 +100,9 @@ public abstract class AbstractApplicationResource<
 
 
         // creating the entity
-        this.beforeCreate(entityToCreate, requestBody, requestingUser);
+        this.beforeCreate(entityToCreate, props);
         Optional<E> createdEntity = this.service.create(entityToCreate);
-        this.afterCreate(createdEntity, requestBody, requestingUser);
+        this.afterCreate(createdEntity, props);
 
         // creating instance of the entity's response factory
         R responseFactory;
@@ -109,7 +116,7 @@ public abstract class AbstractApplicationResource<
         // forming the response body
         CreationResponse responseBody;
         try {
-            responseBody = responseFactory.createCreationResponse(createdEntity, requestBody, requestingUser);
+            responseBody = responseFactory.createCreationResponse(createdEntity, props);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
@@ -120,9 +127,16 @@ public abstract class AbstractApplicationResource<
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(
             @PathVariable String id,
+            @PathVariable Map<String, String> pathVars,
+            @RequestParam Map<String, String> queryParams,
             HttpServletRequest request
     ) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
+
+        RequestProperties props = new RequestProperties();
+        props.setPathVariableIds(pathVars);
+        props.setRequestingUserId(requestingUser);
+        props.setQueryParameters(queryParams);
 
         // Parse uuid from string
         UUID uuid;
@@ -133,14 +147,14 @@ public abstract class AbstractApplicationResource<
         }
 
         // Verifying that the requesting user has permissions to get this object
-        if (!this.hasViewPermissions(uuid, requestingUser)) {
+        if (!this.hasViewPermissions(uuid, props)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to get resource."));
         }
 
         // fetching the entity
-        this.beforeGet(uuid, requestingUser);
+        this.beforeGet(uuid, props);
         Optional<E> queriedEntityOpt = this.service.getById(uuid);
-        this.afterGet(uuid, queriedEntityOpt, requestingUser);
+        this.afterGet(uuid, queriedEntityOpt, props);
 
         // initializing the entity's response factory
         R responseFactory;
@@ -154,7 +168,7 @@ public abstract class AbstractApplicationResource<
         // forming the response body
         ViewResponse responseBody;
         try {
-            responseBody = responseFactory.createViewResponse(uuid, queriedEntityOpt.get(), requestingUser);
+            responseBody = responseFactory.createViewResponse(uuid, queriedEntityOpt.get(), props);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         } catch (NoSuchElementException e) {
@@ -167,20 +181,26 @@ public abstract class AbstractApplicationResource<
     @GetMapping
     public ResponseEntity<?> getAll(
             @RequestParam Map<String, String> queryParams,
+            @PathVariable Map<String, String> pathVars,
             HttpServletRequest request
     ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
-        if (!this.hasViewAllPermissions(queryParams, requestingUser)) {
+        RequestProperties props = new RequestProperties();
+        props.setPathVariableIds(pathVars);
+        props.setRequestingUserId(requestingUser);
+        props.setQueryParameters(queryParams);
+
+        if (!this.hasViewAllPermissions(props)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to get resource."));
         }
 
-        this.beforeGetAll(queryParams, requestingUser);
+        this.beforeGetAll(props);
 
-        Page<E> queriedEntitiesPage = this.service.getAll(queryParams);
+        Page<E> queriedEntitiesPage = this.service.getAll(props);
         List<E> queriedEntities = queriedEntitiesPage.toList();
 
-        this.afterGetAll(queryParams, queriedEntities, requestingUser);
+        this.afterGetAll( queriedEntities, props);
 
         // initializing the entity's response factory
         R responseFactory;
@@ -193,7 +213,7 @@ public abstract class AbstractApplicationResource<
 
         List<ViewAllResponseComponent> responseBody;
         try {
-            responseBody = responseFactory.createViewAllResponse(queryParams, queriedEntities, requestingUser);
+            responseBody = responseFactory.createViewAllResponse(queriedEntities, props);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
@@ -210,9 +230,17 @@ public abstract class AbstractApplicationResource<
     public ResponseEntity<?> edit(
             @PathVariable String id,
             @RequestBody Map<String, Object> requestBody,
+            @PathVariable Map<String, String> pathVars,
+            @RequestParam Map<String, String> queryParams,
             HttpServletRequest request
     ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
+
+        RequestProperties props = new RequestProperties();
+        props.setPathVariableIds(pathVars);
+        props.setRequestBody(requestBody);
+        props.setRequestingUserId(requestingUser);
+        props.setQueryParameters(queryParams);
 
         // Parse uuid from string
         UUID uuid;
@@ -230,7 +258,7 @@ public abstract class AbstractApplicationResource<
 
         E candidateEntity = existingEntityOpt.get();
 
-        candidateEntity.edit(requestBody);
+        candidateEntity.edit(props);
 
         // validates the entity body
         try {
@@ -240,7 +268,7 @@ public abstract class AbstractApplicationResource<
         }
 
         // check if requesting user has creation permissions
-        if (!this.hasEditPermissions(uuid, candidateEntity, requestingUser)) {
+        if (!this.hasEditPermissions(uuid, candidateEntity, props)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse("Not authorized to edit resource."));
         }
 
@@ -255,9 +283,9 @@ public abstract class AbstractApplicationResource<
 
 
         // creating the entity
-        this.beforeEdit(uuid, candidateEntity, requestingUser);
+        this.beforeEdit(uuid, candidateEntity, props);
         Optional<E> editedEntity = this.service.edit(uuid, candidateEntity);
-        this.afterEdit(uuid, editedEntity.get(), requestingUser);
+        this.afterEdit(uuid, editedEntity.get(), props);
 
         // creating instance of the entity's response factory
         R responseFactory;
@@ -271,7 +299,7 @@ public abstract class AbstractApplicationResource<
         // forming the response body
         EditResponse responseBody;
         try {
-            responseBody = responseFactory.createEditResponse(uuid, editedEntity, requestingUser);
+            responseBody = responseFactory.createEditResponse(uuid, editedEntity, props);
         } catch (NotImplementedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("There was an error processing the request."));
         }
@@ -279,39 +307,39 @@ public abstract class AbstractApplicationResource<
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public boolean hasCreatePermissions(E entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
+    public boolean hasCreatePermissions(E entityToCreate, RequestProperties props) {
         return false;
     }
 
-    public void beforeCreate(E entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {}
+    public void beforeCreate(E entityToCreate, RequestProperties props) {}
 
-    public void afterCreate(Optional<E> createdEntity, Map<String, Object> requestBody, Optional<UUID> requestingUser) {}
+    public void afterCreate(Optional<E> createdEntity, RequestProperties props) {}
 
-    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, RequestProperties props) {
         return false;
     }
 
-    public void beforeGet(UUID id, Optional<UUID> requestingUser) {}
+    public void beforeGet(UUID id, RequestProperties props) {}
 
-    public void afterGet(UUID id, Optional<E> queriedEntity, Optional<UUID> requestingUser) {}
+    public void afterGet(UUID id, Optional<E> queriedEntity, RequestProperties props) {}
 
-    public boolean hasViewAllPermissions(Map<String, String> queryParams, Optional<UUID> requestingUser) {
+    public boolean hasViewAllPermissions(RequestProperties props) {
         return false;
     }
 
-    public void beforeGetAll(Map<String, String> queryParams, Optional<UUID> requestingUser) {}
+    public void beforeGetAll(RequestProperties props) {}
 
-    public void afterGetAll(Map<String, String> queryParams, List<E> queriedEntities, Optional<UUID> requestingUser) {}
+    public void afterGetAll(List<E> queriedEntities, RequestProperties props) {}
 
-    public boolean hasEditPermissions(UUID id, E candidateEntity, Optional<UUID> requestingUser) {
+    public boolean hasEditPermissions(UUID id, E candidateEntity, RequestProperties props) {
         return false;
     }
 
-    public void beforeEdit(UUID id, E candidateEntity, Optional<UUID> requestingUser) {}
+    public void beforeEdit(UUID id, E candidateEntity, RequestProperties props) {}
 
-    public void afterEdit(UUID id, E editedEntity, Optional<UUID> requestingUser) {}
+    public void afterEdit(UUID id, E editedEntity, RequestProperties props) {}
 
-    public boolean hasDeletePermissions(UUID id, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
+    public boolean hasDeletePermissions(UUID id, RequestProperties props) {
         return false;
     }
 

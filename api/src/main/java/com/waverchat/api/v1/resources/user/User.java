@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.resources.user;
 
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
@@ -72,13 +73,13 @@ public class User extends AbstractApplicationEntity {
     }
 
     @Override
-    public void edit(Map<String, Object> requestBody) {
-        if (requestBody.containsKey("username"))
-            this.username = (String) requestBody.get("username");
-        if (requestBody.containsKey("firstName"))
-            this.firstName = (String) requestBody.get("firstName");
-        if (requestBody.containsKey("lastName"))
-            this.lastName = (String) requestBody.get("lastName");
+    public void edit(RequestProperties props) {
+        if (props.getRequestBody().containsKey("username"))
+            this.username = (String) props.getRequestBody().get("username");
+        if (props.getRequestBody().containsKey("firstName"))
+            this.firstName = (String) props.getRequestBody().get("firstName");
+        if (props.getRequestBody().containsKey("lastName"))
+            this.lastName = (String) props.getRequestBody().get("lastName");
     }
 
     @Override

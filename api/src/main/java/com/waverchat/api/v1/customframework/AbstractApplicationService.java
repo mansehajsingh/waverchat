@@ -25,7 +25,7 @@ public abstract class AbstractApplicationService<E extends AbstractApplicationEn
         return Optional.empty();
     }
 
-    public Page<E> getAll(Map<String, String> queryParams) { return Page.empty(); }
+    public Page<E> getAll(RequestProperties props) { return Page.empty(); }
 
     public Optional<E> edit(UUID id, E candidateEntity) {
         return Optional.empty();

@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.resources.user;
 
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.resources.user.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
@@ -15,7 +16,7 @@ public class UserResponseFactory extends ResponseDTOFactory<
     }
 
     @Override
-    public UserViewResponse createViewResponse(UUID id, User queriedEntity, Optional<UUID> requestingUser)
+    public UserViewResponse createViewResponse(UUID id, User queriedEntity, RequestProperties props)
             throws NotImplementedException
     {
         return new UserViewResponse(
@@ -31,9 +32,8 @@ public class UserResponseFactory extends ResponseDTOFactory<
 
     @Override
     public List<UserViewAllResponseComponent> createViewAllResponse(
-            Map<String, String> queryParams,
             List<User> queriedEntities,
-            Optional<UUID> requestingUser
+            RequestProperties props
     ) {
         List<UserViewAllResponseComponent> responseComponents = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class UserResponseFactory extends ResponseDTOFactory<
     public UserEditResponse createEditResponse(
             UUID id,
             Optional<User> editedEntityOpt,
-            Optional<UUID> requestingUser
+            RequestProperties props
     ) throws NotImplementedException
     {
 

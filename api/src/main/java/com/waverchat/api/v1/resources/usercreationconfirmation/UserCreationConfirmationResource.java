@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserService;
 import com.waverchat.api.v1.customframework.AbstractApplicationResource;
@@ -21,17 +22,17 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     private UserService userService;
 
     @Override
-    public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, Map<String, Object> requestBody, Optional<UUID> requestingUser) {
+    public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, RequestProperties props) {
         return true;
     }
 
     @Override
-    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, RequestProperties props) {
         return true;
     }
 
     @Override
-    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, Optional<UUID> requestingUser) {
+    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, RequestProperties props) {
         if (queriedEntity.isEmpty()) return;
 
         UserCreationConfirmation toDelete = queriedEntity.get();

@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.user;
 
 import com.waverchat.api.v1.customframework.AbstractApplicationResource;
+import com.waverchat.api.v1.customframework.RequestProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,21 +14,21 @@ import java.util.UUID;
 public class UserResource extends AbstractApplicationResource<User, UserService, UserResponseFactory> {
 
     @Override
-    public boolean hasViewPermissions(UUID id, Optional<UUID> requestingUser) {
+    public boolean hasViewPermissions(UUID id, RequestProperties props) {
         return true;
     }
 
     @Override
-    public boolean hasViewAllPermissions(Map<String, String> queryParams, Optional<UUID> requestingUser) {
+    public boolean hasViewAllPermissions(RequestProperties props) {
         return true;
     }
 
     @Override
-    public boolean hasEditPermissions(UUID id, User candidateEntity, Optional<UUID> requestingUser) {
-        if (!requestingUser.isPresent())
+    public boolean hasEditPermissions(UUID id, User candidateEntity, RequestProperties props) {
+        if (!props.hasRequestingUserId())
             return false;
 
-        if (!requestingUser.get().equals(id))
+        if (!props.getRequestingUserId().equals(id))
             return false;
 
         return true;

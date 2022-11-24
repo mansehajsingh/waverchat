@@ -26,7 +26,7 @@ public abstract class AbstractApplicationEntity {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public void edit(Map<String, Object> requestBody) {}
+    public void edit(RequestProperties props) {}
 
     public void validateForCreate() throws ValidationException {}
 
