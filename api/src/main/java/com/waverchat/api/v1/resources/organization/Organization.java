@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.organization;
 
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
+import com.waverchat.api.v1.customframework.RequestProperties;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -28,6 +29,11 @@ public class Organization extends AbstractApplicationEntity {
     public Organization(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public Organization(RequestProperties props) {
+        this.name = (String) props.getRequestBody().get("name");
+        this.description = (String) props.getRequestBody().get("description");
     }
 
     @Override

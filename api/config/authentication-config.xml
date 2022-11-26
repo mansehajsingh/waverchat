@@ -10,6 +10,10 @@
                 <method>PUT</method>
                 <uri>api/v1/users/{}</uri>
             </endpoint>
+            <endpoint>
+                <method>POST</method>
+                <uri>api/v1/organizations</uri>
+            </endpoint>
         </authenticatedEndpoints>
     </v1>
 </authentication>
