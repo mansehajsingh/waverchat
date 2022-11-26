@@ -2,7 +2,6 @@ package com.waverchat.api.v1.resources.organization;
 
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
-import com.waverchat.api.v1.resources.user.User;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -24,16 +23,11 @@ public class Organization extends AbstractApplicationEntity {
     @Length(min=OrganizationConstants.MIN_ORG_DESC_LENGTH, max=OrganizationConstants.MAX_ORG_DESC_LENGTH)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-
     public Organization() {}
 
-    public Organization(String name, String description, User owner) {
+    public Organization(String name, String description) {
         this.name = name;
         this.description = description;
-        this.owner = owner;
     }
 
     @Override
