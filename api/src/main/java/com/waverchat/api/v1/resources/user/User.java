@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.user;
 
 import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.resources.organization.Organization;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
@@ -61,6 +62,9 @@ public class User extends AbstractApplicationEntity {
 
     @OneToMany(mappedBy = "user")
     private Set<Session> sessions = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Organization> organizations = new HashSet<>();
 
     public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {
         this.setEmail(email);
