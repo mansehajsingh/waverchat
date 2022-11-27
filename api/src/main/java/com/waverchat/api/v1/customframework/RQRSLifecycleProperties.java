@@ -2,7 +2,7 @@ package com.waverchat.api.v1.customframework;
 
 import java.util.*;
 
-public class RQRSLifecycleProperties<T> {
+public class RQRSLifecycleProperties {
 
     private Map<String, String> queryParams;
 

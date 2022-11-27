@@ -54,7 +54,7 @@ public class UserService extends AbstractApplicationService<User> {
         StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
 
         // building the query from each of the fields if the search contains the specified field
-        query.andAllStringQueries(strFields, stringPaths,props.getQueryParams());
+        query.andAllStringQueries(strFields, stringPaths, props.getQueryParams());
 
         // adding query support for date based searches
         query.andDefaultDatePathBehaviour(qUser.createdAt, qUser.updatedAt, props.getQueryParams());
