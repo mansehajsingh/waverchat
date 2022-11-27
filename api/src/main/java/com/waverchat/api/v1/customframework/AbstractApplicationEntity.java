@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -26,7 +25,7 @@ public abstract class AbstractApplicationEntity {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public void edit(RequestProperties props) {}
+    public void edit(RQRSLifecycleProperties props) {}
 
     public void validateForCreate() throws ValidationException {}
 

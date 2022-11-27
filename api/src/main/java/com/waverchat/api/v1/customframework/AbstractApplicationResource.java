@@ -40,10 +40,10 @@ public abstract class AbstractApplicationResource<
         return rfCtor.newInstance();
     }
 
-    private E createEntityInstance(RequestProperties props) throws Exception {
+    private E createEntityInstance(RQRSLifecycleProperties props) throws Exception {
         Class<E> entityType = (Class<E>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
-        Constructor<E> eCtor = entityType.getConstructor(RequestProperties.class);
+        Constructor<E> eCtor = entityType.getConstructor(RQRSLifecycleProperties.class);
         return eCtor.newInstance(props);
     }
 
@@ -62,7 +62,7 @@ public abstract class AbstractApplicationResource<
     {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
-        RequestProperties props = new RequestProperties();
+        RQRSLifecycleProperties props = new RQRSLifecycleProperties();
         props.setPathVariableIds(pathVars);
         props.setRequestBody(requestBody);
         props.setRequestingUserId(requestingUser);
@@ -133,7 +133,7 @@ public abstract class AbstractApplicationResource<
     ) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
-        RequestProperties props = new RequestProperties();
+        RQRSLifecycleProperties props = new RQRSLifecycleProperties();
         props.setPathVariableIds(pathVars);
         props.setRequestingUserId(requestingUser);
         props.setQueryParameters(queryParams);
@@ -186,7 +186,7 @@ public abstract class AbstractApplicationResource<
     ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
-        RequestProperties props = new RequestProperties();
+        RQRSLifecycleProperties props = new RQRSLifecycleProperties();
         props.setPathVariableIds(pathVars);
         props.setRequestingUserId(requestingUser);
         props.setQueryParameters(queryParams);
@@ -236,7 +236,7 @@ public abstract class AbstractApplicationResource<
     ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Optional<UUID> requestingUser = RequestUtil.getRequestingUser(request);
 
-        RequestProperties props = new RequestProperties();
+        RQRSLifecycleProperties props = new RQRSLifecycleProperties();
         props.setPathVariableIds(pathVars);
         props.setRequestBody(requestBody);
         props.setRequestingUserId(requestingUser);
@@ -307,39 +307,39 @@ public abstract class AbstractApplicationResource<
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    public boolean hasCreatePermissions(E entityToCreate, RequestProperties props) {
+    public boolean hasCreatePermissions(E entityToCreate, RQRSLifecycleProperties props) {
         return false;
     }
 
-    public void beforeCreate(E entityToCreate, RequestProperties props) {}
+    public void beforeCreate(E entityToCreate, RQRSLifecycleProperties props) {}
 
-    public void afterCreate(Optional<E> createdEntity, RequestProperties props) {}
+    public void afterCreate(Optional<E> createdEntity, RQRSLifecycleProperties props) {}
 
-    public boolean hasViewPermissions(UUID id, RequestProperties props) {
+    public boolean hasViewPermissions(UUID id, RQRSLifecycleProperties props) {
         return false;
     }
 
-    public void beforeGet(UUID id, RequestProperties props) {}
+    public void beforeGet(UUID id, RQRSLifecycleProperties props) {}
 
-    public void afterGet(UUID id, Optional<E> queriedEntity, RequestProperties props) {}
+    public void afterGet(UUID id, Optional<E> queriedEntity, RQRSLifecycleProperties props) {}
 
-    public boolean hasViewAllPermissions(RequestProperties props) {
+    public boolean hasViewAllPermissions(RQRSLifecycleProperties props) {
         return false;
     }
 
-    public void beforeGetAll(RequestProperties props) {}
+    public void beforeGetAll(RQRSLifecycleProperties props) {}
 
-    public void afterGetAll(List<E> queriedEntities, RequestProperties props) {}
+    public void afterGetAll(List<E> queriedEntities, RQRSLifecycleProperties props) {}
 
-    public boolean hasEditPermissions(UUID id, E candidateEntity, RequestProperties props) {
+    public boolean hasEditPermissions(UUID id, E candidateEntity, RQRSLifecycleProperties props) {
         return false;
     }
 
-    public void beforeEdit(UUID id, E candidateEntity, RequestProperties props) {}
+    public void beforeEdit(UUID id, E candidateEntity, RQRSLifecycleProperties props) {}
 
-    public void afterEdit(UUID id, E editedEntity, RequestProperties props) {}
+    public void afterEdit(UUID id, E editedEntity, RQRSLifecycleProperties props) {}
 
-    public boolean hasDeletePermissions(UUID id, RequestProperties props) {
+    public boolean hasDeletePermissions(UUID id, RQRSLifecycleProperties props) {
         return false;
     }
 

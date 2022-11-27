@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.user;
 
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
+import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
@@ -62,6 +63,9 @@ public class User extends AbstractApplicationEntity {
     @OneToMany(mappedBy = "user")
     private Set<Session> sessions = new HashSet<>();
 
+    @OneToMany(mappedBy = "member")
+    private Set<OrganizationMember> organizationMemberships = new HashSet<>();
+
     public User (String email, String username, String passwordHash, String firstName, String lastName, boolean superUser, boolean deleted) {
         this.setEmail(email);
         this.setUsername(username);
@@ -73,7 +77,7 @@ public class User extends AbstractApplicationEntity {
     }
 
     @Override
-    public void edit(RequestProperties props) {
+    public void edit(RQRSLifecycleProperties props) {
         if (props.getRequestBody().containsKey("username"))
             this.username = (String) props.getRequestBody().get("username");
         if (props.getRequestBody().containsKey("firstName"))

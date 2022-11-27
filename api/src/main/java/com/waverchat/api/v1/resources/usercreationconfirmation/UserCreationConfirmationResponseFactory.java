@@ -1,11 +1,10 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.usercreationconfirmation.dto.*;
 import com.waverchat.api.v1.customframework.ResponseDTOFactory;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class UserCreationConfirmationResponseFactory extends ResponseDTOFactory<
     @Override
     public UserCreationConfirmationCreationResponse createCreationResponse(
             Optional<UserCreationConfirmation> createdUCCOpt,
-            RequestProperties props
+            RQRSLifecycleProperties props
     )
             throws NotImplementedException
     {
@@ -43,7 +42,7 @@ public class UserCreationConfirmationResponseFactory extends ResponseDTOFactory<
 
     @Override
     public UserCreationConfirmationViewResponse createViewResponse(
-            UUID id, UserCreationConfirmation queriedEntity, RequestProperties props
+            UUID id, UserCreationConfirmation queriedEntity, RQRSLifecycleProperties props
     )
             throws NotImplementedException, NoSuchElementException
     {

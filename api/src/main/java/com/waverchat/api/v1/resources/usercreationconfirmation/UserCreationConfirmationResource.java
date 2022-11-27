@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserService;
 import com.waverchat.api.v1.customframework.AbstractApplicationResource;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,17 +21,17 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
     private UserService userService;
 
     @Override
-    public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, RequestProperties props) {
+    public boolean hasCreatePermissions(UserCreationConfirmation entityToCreate, RQRSLifecycleProperties props) {
         return true;
     }
 
     @Override
-    public boolean hasViewPermissions(UUID id, RequestProperties props) {
+    public boolean hasViewPermissions(UUID id, RQRSLifecycleProperties props) {
         return true;
     }
 
     @Override
-    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, RequestProperties props) {
+    public void afterGet(UUID id, Optional<UserCreationConfirmation> queriedEntity, RQRSLifecycleProperties props) {
         if (queriedEntity.isEmpty()) return;
 
         UserCreationConfirmation toDelete = queriedEntity.get();

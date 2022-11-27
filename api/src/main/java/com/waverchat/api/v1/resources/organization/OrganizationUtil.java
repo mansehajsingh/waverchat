@@ -5,7 +5,7 @@ public class OrganizationUtil {
     public static boolean isValidName(String name) {
         if (name == null) return false;
 
-        if (name.length() < OrganizationConstants.MAX_ORG_NAME_LENGTH
+        if (name.length() < OrganizationConstants.MIN_ORG_NAME_LENGTH
                 || name.length() > OrganizationConstants.MAX_ORG_NAME_LENGTH)
         {
             return false;
@@ -17,7 +17,7 @@ public class OrganizationUtil {
     public static boolean isValidDescription(String description) {
         if (description == null) return false;
 
-        if (description.length() < OrganizationConstants.MAX_ORG_NAME_LENGTH
+        if (description.length() < OrganizationConstants.MIN_ORG_NAME_LENGTH
                 || description.length() > OrganizationConstants.MAX_ORG_NAME_LENGTH)
         {
             return false;

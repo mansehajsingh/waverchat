@@ -4,7 +4,6 @@ import com.waverchat.api.v1.customframework.dto.*;
 import com.waverchat.api.v1.exceptions.NotImplementedException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,25 +18,25 @@ public class ResponseDTOFactory<
 
     public ResponseDTOFactory() {}
 
-    public C createCreationResponse(Optional<E> createdEntity, RequestProperties props)
+    public C createCreationResponse(Optional<E> createdEntity, RQRSLifecycleProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createCreationResponseBody method.");
     }
 
-    public V createViewResponse(UUID id, E queriedEntity, RequestProperties props)
+    public V createViewResponse(UUID id, E queriedEntity, RQRSLifecycleProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewResponse method.");
     }
 
-    public List<VAC> createViewAllResponse(List<E> queriedEntities, RequestProperties props)
+    public List<VAC> createViewAllResponse(List<E> queriedEntities, RQRSLifecycleProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createViewAllResponse method.");
     }
 
-    public ED createEditResponse(UUID id, Optional<E> editedEntity, RequestProperties props)
+    public ED createEditResponse(UUID id, Optional<E> editedEntity, RQRSLifecycleProperties props)
             throws NotImplementedException
     {
         throw new NotImplementedException("Did not implement createEditResponse method.");

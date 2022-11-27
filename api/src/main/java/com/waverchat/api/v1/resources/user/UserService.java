@@ -2,7 +2,7 @@ package com.waverchat.api.v1.resources.user;
 
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.ResourceNotFoundException;
 import com.waverchat.api.v1.util.query.AppQuery;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public Page<User> getAll(RequestProperties props) {
+    public Page<User> getAll(RQRSLifecycleProperties props) {
         QUser qUser = QUser.user;
         AppQuery query = new AppQuery();
 

@@ -1,15 +1,18 @@
 package com.waverchat.api.v1.resources.organization;
 
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.exceptions.ValidationException;
+import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "organizations")
@@ -24,6 +27,9 @@ public class Organization extends AbstractApplicationEntity {
     @Length(min=OrganizationConstants.MIN_ORG_DESC_LENGTH, max=OrganizationConstants.MAX_ORG_DESC_LENGTH)
     private String description;
 
+    @OneToMany(mappedBy = "organization")
+    private Set<OrganizationMember> members = new HashSet<>();
+
     public Organization() {}
 
     public Organization(String name, String description) {
@@ -31,7 +37,7 @@ public class Organization extends AbstractApplicationEntity {
         this.description = description;
     }
 
-    public Organization(RequestProperties props) {
+    public Organization(RQRSLifecycleProperties props) {
         this.name = (String) props.getRequestBody().get("name");
         this.description = (String) props.getRequestBody().get("description");
     }

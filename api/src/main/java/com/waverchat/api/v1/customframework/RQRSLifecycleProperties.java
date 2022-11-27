@@ -2,7 +2,7 @@ package com.waverchat.api.v1.customframework;
 
 import java.util.*;
 
-public class RequestProperties {
+public class RQRSLifecycleProperties<T> {
 
     private Map<String, String> queryParams;
 
@@ -12,7 +12,9 @@ public class RequestProperties {
 
     private Map<String, Object> requestBody;
 
-    public RequestProperties() {
+    private Map<Object, Object> attached;
+
+    public RQRSLifecycleProperties() {
         this.queryParams = new HashMap<>();
         this.pathVariableIdentifiers = new HashMap<>();
         this.requestBody = new HashMap<>();
@@ -62,6 +64,17 @@ public class RequestProperties {
 
     public boolean hasRequestingUserId() {
         return this.requestingUserId != null;
+    }
+
+    public void attach(Object key, Object value) {
+        if (this.attached == null)
+            this.attached = new HashMap<>();
+
+        this.attached.put(key, value);
+    }
+
+    public Object getAttached(Object key) {
+        return this.attached.get(key);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.customframework.RequestProperties;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
@@ -18,7 +18,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(
@@ -62,7 +61,7 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
     @NotNull
     private boolean deleted = false;
 
-    public UserCreationConfirmation(RequestProperties props) {
+    public UserCreationConfirmation(RQRSLifecycleProperties props) {
         this.email = (String) props.getRequestBody().get("email");
         this.username = (String) props.getRequestBody().get("username");
         this.password = (String) props.getRequestBody().get("password");
