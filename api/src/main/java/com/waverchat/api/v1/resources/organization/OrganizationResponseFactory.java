@@ -8,6 +8,7 @@ import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.dto.UserViewResponse;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class OrganizationResponseFactory extends ResponseDTOFactory<
         Organization, OrganizationCreationResponse, OrganizationViewResponse, OrganizationViewAllResponseComponent,
@@ -42,5 +43,29 @@ public class OrganizationResponseFactory extends ResponseDTOFactory<
         creationResponse.setOwner(ownerResponse);
 
         return creationResponse;
+    }
+
+    @Override
+    public OrganizationViewResponse createViewResponse(UUID id, Organization queriedEntity, RQRSLifecycleProperties props)
+            throws NotImplementedException
+    {
+        OrganizationViewResponse response = new OrganizationViewResponse();
+
+        response.setId(id);
+        response.setName(queriedEntity.getName());
+        response.setDescription(queriedEntity.getDescription());
+        response.setCreatedAt(queriedEntity.getCreatedAt());
+        response.setUpdatedAt(queriedEntity.getUpdatedAt());
+
+        User owner = (User) props.getAttached("owner");
+
+        UserViewResponse ownerResponse = new UserViewResponse(
+                owner.getId(), owner.getUsername(), owner.getEmail(), owner.getFirstName(),
+                owner.getLastName(), owner.getCreatedAt(), owner.getUpdatedAt()
+        );
+
+        response.setOwner(ownerResponse);
+
+        return response;
     }
 }

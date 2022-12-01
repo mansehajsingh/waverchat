@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrganizationService extends AbstractApplicationService<Organization> {
@@ -24,6 +25,11 @@ public class OrganizationService extends AbstractApplicationService<Organization
     @Override
     public Optional<Organization> create(Organization entityToCreate, RQRSLifecycleProperties props) {
         return createOrgAndOwner(entityToCreate, props);
+    }
+
+    @Override
+    public Optional<Organization> getById(UUID id, RQRSLifecycleProperties props) {
+        return this.organizationRepository.findById(id);
     }
 
     @Transactional

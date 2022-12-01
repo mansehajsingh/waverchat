@@ -20,4 +20,10 @@ public interface OrganizationMemberRepository extends BaseRepository<Organizatio
 
     boolean existsByOrganization_IdAndMember_Id(UUID organizationId, UUID memberId);
 
+    OrganizationMember findByOrganization_IdAndType(UUID organizationId, String type);
+
+    default OrganizationMember findByOrganization_IdAndType(UUID organizationId, OrganizationMembershipType type) {
+        return findByOrganization_IdAndType(organizationId, type.getValue());
+    }
+
 }
