@@ -3,6 +3,7 @@ package com.waverchat.api.v1.authentication.session;
 import com.waverchat.api.v1.EnvironmentVariablesAccessor;
 import com.waverchat.api.v1.authentication.session.http.SessionCreationRequest;
 import com.waverchat.api.v1.authentication.session.http.SessionResponse;
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserService;
 import com.waverchat.api.v1.authentication.AuthUtils;
@@ -121,7 +122,7 @@ public class SessionController {
         User user;
 
         try {
-            user = this.userService.getById(requestingUser).get();
+            user = this.userService.getById(requestingUser, new RQRSLifecycleProperties()).get();
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No user exists with this id"));
         }

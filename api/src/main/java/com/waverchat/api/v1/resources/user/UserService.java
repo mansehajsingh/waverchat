@@ -22,7 +22,7 @@ public class UserService extends AbstractApplicationService<User> {
     UserRepository userRepository;
 
     @Override
-    public Optional<User> create(User entityToCreate) {
+    public Optional<User> create(User entityToCreate, RQRSLifecycleProperties props) {
         return Optional.of(this.userRepository.save(entityToCreate));
     }
 
@@ -39,7 +39,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public Optional<User> getById(UUID id) {
+    public Optional<User> getById(UUID id, RQRSLifecycleProperties props) {
         return this.userRepository.findById(id);
     }
 
@@ -71,7 +71,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public void auditForEdit(User candidateEntity) throws ConflictException {
+    public void auditForEdit(User candidateEntity, RQRSLifecycleProperties props) throws ConflictException {
 
         Optional<User> existingUsernameOpt =
                 this.userRepository.findByUsernameIgnoreCase(candidateEntity.getUsername());
@@ -83,7 +83,7 @@ public class UserService extends AbstractApplicationService<User> {
     }
 
     @Override
-    public Optional<User> edit(UUID id, User candidateEntity) {
+    public Optional<User> edit(UUID id, User candidateEntity, RQRSLifecycleProperties props) {
         return Optional.of(this.userRepository.save(candidateEntity));
     }
 }

@@ -13,21 +13,21 @@ import java.util.UUID;
 
 public abstract class AbstractApplicationService<E extends AbstractApplicationEntity> {
 
-    public void auditForCreate(E entityToCreate) throws ConflictException {}
+    public void auditForCreate(E entityToCreate, RQRSLifecycleProperties props) throws ConflictException {}
 
-    public void auditForEdit(E candidateEntity) throws ConflictException {}
+    public void auditForEdit(E candidateEntity, RQRSLifecycleProperties props) throws ConflictException {}
 
-    public Optional<E> create(E entityToCreate) {
+    public Optional<E> create(E entityToCreate, RQRSLifecycleProperties props) {
         return Optional.empty();
     };
 
-    public Optional<E> getById(UUID id) {
+    public Optional<E> getById(UUID id, RQRSLifecycleProperties props) {
         return Optional.empty();
     }
 
     public Page<E> getAll(RQRSLifecycleProperties props) { return Page.empty(); }
 
-    public Optional<E> edit(UUID id, E candidateEntity) {
+    public Optional<E> edit(UUID id, E candidateEntity, RQRSLifecycleProperties props) {
         return Optional.empty();
     }
 

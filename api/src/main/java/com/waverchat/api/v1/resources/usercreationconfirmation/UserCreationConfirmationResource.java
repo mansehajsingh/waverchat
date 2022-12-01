@@ -48,7 +48,7 @@ public class UserCreationConfirmationResource extends AbstractApplicationResourc
                 toDelete.isDeleted()
         );
 
-        this.userService.create(userToCreate);
+        this.userService.create(userToCreate, props);
         this.service.deleteAllByEmail(toDelete.getEmail());
     }
 

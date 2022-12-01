@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
+import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.exceptions.ConflictException;
@@ -21,7 +22,7 @@ public class UserCreationConfirmationService extends AbstractApplicationService<
     private UserRepository userRepository;
 
     @Override
-    public void auditForCreate(UserCreationConfirmation entityToCreate) throws ConflictException {
+    public void auditForCreate(UserCreationConfirmation entityToCreate, RQRSLifecycleProperties props) throws ConflictException {
         // Verifying no existing user uses the provided username
         if (this.userRepository.existsByUsernameIgnoreCase(entityToCreate.getUsername())) {
             throw new ConflictException("Username already in use by existing user.");
@@ -38,7 +39,7 @@ public class UserCreationConfirmationService extends AbstractApplicationService<
     }
 
     @Override
-    public Optional<UserCreationConfirmation> create(UserCreationConfirmation entityToCreate) {
+    public Optional<UserCreationConfirmation> create(UserCreationConfirmation entityToCreate, RQRSLifecycleProperties props) {
         // hashing supplied user password before passing it on to the db
         entityToCreate.setPasswordHash(
                 BCrypt.hashpw(entityToCreate.getPassword(), BCrypt.gensalt())
@@ -50,7 +51,7 @@ public class UserCreationConfirmationService extends AbstractApplicationService<
     }
 
     @Override
-    public Optional<UserCreationConfirmation> getById(UUID id) {
+    public Optional<UserCreationConfirmation> getById(UUID id, RQRSLifecycleProperties props) {
         return this.userCreationConfirmationRepository.findById(id);
     }
 

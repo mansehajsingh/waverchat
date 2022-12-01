@@ -18,6 +18,10 @@
                 <method>GET</method>
                 <uri>api/v1/organizations/{}/members</uri>
             </endpoint>
+            <endpoint>
+                <method>POST</method>
+                <uri>api/v1/organizations/{}/members</uri>
+            </endpoint>
         </authenticatedEndpoints>
     </v1>
 </authentication>

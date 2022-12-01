@@ -3,6 +3,9 @@ package com.waverchat.api.v1.resources.organizationmember;
 import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
+import com.waverchat.api.v1.exceptions.ConflictException;
+import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,14 +22,20 @@ public class OrganizationMemberService extends AbstractApplicationService<Organi
     @Autowired
     private OrganizationMemberRepository organizationMemberRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public Optional<OrganizationMember> getById(UUID id) {
+    public Optional<OrganizationMember> getById(UUID id, RQRSLifecycleProperties props) {
         return this.organizationMemberRepository.findById(id);
     }
 
     @Override
-    public Optional<OrganizationMember> create(OrganizationMember entityToCreate) {
-        return Optional.of(this.organizationMemberRepository.save(entityToCreate));
+    public Optional<OrganizationMember> create(OrganizationMember entityToCreate, RQRSLifecycleProperties props) {
+       OrganizationMember createdOM = this.organizationMemberRepository.saveAndFlush(entityToCreate);
+       this.organizationMemberRepository.refresh(createdOM);
+
+       return Optional.of(createdOM);
     }
 
     @Override

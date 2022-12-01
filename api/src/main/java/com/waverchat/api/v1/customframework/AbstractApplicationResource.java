@@ -11,6 +11,7 @@ import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.http.response.MultiMessageResponse;
 import com.waverchat.api.v1.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -93,7 +94,7 @@ public abstract class AbstractApplicationResource<
 
         // checking if creation of the entity would cause any problems
         try {
-            this.service.auditForCreate(entityToCreate);
+            this.service.auditForCreate(entityToCreate, props);
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
         }
@@ -101,7 +102,7 @@ public abstract class AbstractApplicationResource<
 
         // creating the entity
         this.beforeCreate(entityToCreate, props);
-        Optional<E> createdEntity = this.service.create(entityToCreate);
+        Optional<E> createdEntity = this.service.create(entityToCreate, props);
         this.afterCreate(createdEntity, props);
 
         // creating instance of the entity's response factory
@@ -153,7 +154,7 @@ public abstract class AbstractApplicationResource<
 
         // fetching the entity
         this.beforeGet(uuid, props);
-        Optional<E> queriedEntityOpt = this.service.getById(uuid);
+        Optional<E> queriedEntityOpt = this.service.getById(uuid, props);
         this.afterGet(uuid, queriedEntityOpt, props);
 
         // initializing the entity's response factory
@@ -250,7 +251,7 @@ public abstract class AbstractApplicationResource<
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new MessageResponse("Invalid UUID format provided in request parameter."));
         }
 
-        Optional<E> existingEntityOpt = this.service.getById(uuid);
+        Optional<E> existingEntityOpt = this.service.getById(uuid, props);
 
         if (existingEntityOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("No resource with id " + uuid + " could be found."));
@@ -276,7 +277,7 @@ public abstract class AbstractApplicationResource<
 
         // checking if creation of the entity would cause any problems
         try {
-            this.service.auditForEdit(candidateEntity);
+            this.service.auditForEdit(candidateEntity, props);
         } catch (ConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse(e.getMessage()));
         }
@@ -284,7 +285,7 @@ public abstract class AbstractApplicationResource<
 
         // creating the entity
         this.beforeEdit(uuid, candidateEntity, props);
-        Optional<E> editedEntity = this.service.edit(uuid, candidateEntity);
+        Optional<E> editedEntity = this.service.edit(uuid, candidateEntity, props);
         this.afterEdit(uuid, editedEntity.get(), props);
 
         // creating instance of the entity's response factory
