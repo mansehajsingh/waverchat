@@ -2,9 +2,11 @@ package com.waverchat.api.integration.v1.util;
 
 import com.google.gson.Gson;
 import com.mysema.commons.lang.Pair;
+import com.waverchat.api.v1.resources.organization.Organization;
 import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmation;
+import org.aspectj.weaver.ast.Or;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -155,6 +158,44 @@ public class App {
         return mockMvc.perform(
                 get("/api/v1/users")
                         .params(queryParams));
+    }
+
+    public static Organization generateOrganization(Organization defaults) {
+        Organization org = new Organization();
+
+        if (defaults.getName() != null)
+            org.setName(defaults.getName());
+        else
+            org.setName(TestUtils.randStringOfLength(8));
+
+        if (defaults.getDescription() != null)
+            org.setDescription(defaults.getDescription());
+        else
+            org.setDescription(TestUtils.randStringOfLength(40));
+
+        return org;
+    }
+
+    public static ResultActions createOrganization(Organization org, String accessToken, MockMvc mockMvc)
+            throws Exception
+    {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("name", org.getName());
+        requestBody.put("description", org.getDescription());
+
+        Gson gson = new Gson();
+
+        String jsonBody = gson.toJson(requestBody);
+
+        return mockMvc.perform(post("/api/v1/organizations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody)
+                .header("authorization", "Bearer " + accessToken));
+    }
+
+    public static ResultActions fetchOrganization(UUID id, String accessToken, MockMvc mockMvc) throws Exception {
+        return mockMvc.perform(get("/api/v1/organizations/" + id.toString())
+                .header("authorization", "Bearer " + accessToken));
     }
 
 }
