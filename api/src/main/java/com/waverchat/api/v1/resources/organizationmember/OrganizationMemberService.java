@@ -6,6 +6,7 @@ import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -54,8 +55,7 @@ public class OrganizationMemberService extends AbstractApplicationService<Organi
         Sort sort = this.createSort(OrganizationMemberConstants.DEFAULT_SORT_IS_ASCENDING,
                 OrganizationMemberConstants.DEFAULT_SORT_FIELD, props.getQueryParams());
 
-        Pageable pageable = this.createPageable(0, OrganizationMemberConstants.MAX_PAGE_SIZE,
-                OrganizationMemberConstants.MAX_PAGE_SIZE, sort, props.getQueryParams());
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort); // equivalent of no pagination
 
         query.and(qOrgMember.organization.id.eq(props.getPathVariableIds().get("organizationId")));
 
