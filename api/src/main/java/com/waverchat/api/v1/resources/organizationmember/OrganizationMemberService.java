@@ -1,10 +1,7 @@
 package com.waverchat.api.v1.resources.organizationmember;
 
-import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
-import com.waverchat.api.v1.exceptions.ConflictException;
-import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +40,7 @@ public class OrganizationMemberService extends AbstractApplicationService<Organi
         QOrganizationMember qOrgMember = QOrganizationMember.organizationMember;
         AppQuery query = new AppQuery();
 
-        // fields on the user field of organization members objects
-        String [] strFieldsUsers = {"username", "email", "firstName", "lastName"};
-        StringPath [] stringPathsUsers = {qOrgMember.member.username, qOrgMember.member.email,
-                qOrgMember.member.firstName, qOrgMember.member.lastName};
-
-        query.andAllStringQueries(strFieldsUsers, stringPathsUsers, props.getQueryParams());
+        query.andAllStringQueries(OrganizationMemberConstants.QUERYABLE_STR_PATHS, props.getQueryParams());
 
         query.andDefaultDatePathBehaviour(qOrgMember.createdAt, qOrgMember.updatedAt, props.getQueryParams());
 

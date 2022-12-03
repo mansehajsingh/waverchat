@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.resources.user;
 
-import com.querydsl.core.types.dsl.StringPath;
 import com.waverchat.api.v1.customframework.AbstractApplicationService;
 import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.exceptions.ConflictException;
@@ -48,13 +47,8 @@ public class UserService extends AbstractApplicationService<User> {
         QUser qUser = QUser.user;
         AppQuery query = new AppQuery();
 
-        // the following fields can be used to query with the supporting string query features
-        // like wildcard support
-        String [] strFields = {"username", "email", "firstName", "lastName"};
-        StringPath [] stringPaths = {qUser.username, qUser.email, qUser.firstName, qUser.lastName};
-
         // building the query from each of the fields if the search contains the specified field
-        query.andAllStringQueries(strFields, stringPaths, props.getQueryParams());
+        query.andAllStringQueries(UserConstants.QUERYABLE_STR_PATHS, props.getQueryParams());
 
         // adding query support for date based searches
         query.andDefaultDatePathBehaviour(qUser.createdAt, qUser.updatedAt, props.getQueryParams());

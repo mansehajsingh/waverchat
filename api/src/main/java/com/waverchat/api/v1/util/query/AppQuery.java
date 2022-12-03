@@ -27,15 +27,11 @@ public class AppQuery extends InheritableBooleanBuilder {
                 this.dateFormatter.parse(dateString).toInstant(), ZoneId.of("UTC"));
     }
 
-
-    public AppQuery andAllStringQueries(
-            String[] stringFields, StringPath[] stringPaths, Map<String, String> queryParams)
+    public AppQuery andAllStringQueries(Map<String, StringPath> stringPaths, Map<String, String> queryParams)
     {
-        for (int i = 0; i < stringFields.length; i++) {
-            String field = stringFields[i];
-            if (queryParams.containsKey(field)) {
-                String q = queryParams.get(field);
-                this.andStringPath(stringPaths[i], q);
+        for (String key : stringPaths.keySet()) {
+            if (queryParams.containsKey(stringPaths.get(key))) {
+                this.andStringPath(stringPaths.get(key), queryParams.get(key));
             }
         }
 

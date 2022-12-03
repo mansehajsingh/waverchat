@@ -1,8 +1,11 @@
 package com.waverchat.api.v1.resources.user;
 
+import com.querydsl.core.types.dsl.StringPath;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserConstants {
 
@@ -26,6 +29,13 @@ public class UserConstants {
 
     public static final List<String> SUPPORTED_SORT_TAGS =
             Arrays.asList(new String[] {"email", "username", "firstName", "lastName", "createdAt", "updatedAt"});
+
+    public static final Map<String, StringPath> QUERYABLE_STR_PATHS = new HashMap<>() {{
+        put("username", QUser.user.username);
+        put("email", QUser.user.email);
+        put("firstName", QUser.user.firstName);
+        put("lastName", QUser.user.lastName);
+    }};
 
     private UserConstants() {}
 
