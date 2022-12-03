@@ -29,8 +29,8 @@ public class AppQuery extends InheritableBooleanBuilder {
 
     public AppQuery andAllStringQueries(Map<String, StringPath> stringPaths, Map<String, String> queryParams)
     {
-        for (String key : stringPaths.keySet()) {
-            if (queryParams.containsKey(stringPaths.get(key))) {
+        for (String key : queryParams.keySet()) {
+            if (stringPaths.containsKey(key)) {
                 this.andStringPath(stringPaths.get(key), queryParams.get(key));
             }
         }
