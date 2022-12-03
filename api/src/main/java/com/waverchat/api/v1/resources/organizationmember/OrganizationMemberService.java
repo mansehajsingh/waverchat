@@ -68,6 +68,11 @@ public class OrganizationMemberService extends AbstractApplicationService<Organi
         return this.organizationMemberRepository.existsByOrganization_IdAndMember_Id(organizationId, userId);
     }
 
+    public boolean isOwnerOfOrganization(UUID userId, UUID organizationId) {
+        return this.organizationMemberRepository.existsByOrganization_IdAndMember_IdAndType(
+                organizationId, userId, OrganizationMembershipType.OWNER);
+    }
+
     public OrganizationMember getOrganizationOwnerByOrganizationId(UUID organizationId) {
         return this.organizationMemberRepository.findByOrganization_IdAndType(organizationId, OrganizationMembershipType.OWNER);
     }
