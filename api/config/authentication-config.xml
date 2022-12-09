@@ -26,6 +26,10 @@
                 <method>GET</method>
                 <uri>api/v1/organizations/{}</uri>
             </endpoint>
+            <endpoint>
+                <method>POST</method>
+                <uri>api/v1/organizations/{}/invitations</uri>
+            </endpoint>
         </authenticatedEndpoints>
     </v1>
 </authentication>
