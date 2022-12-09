@@ -18,10 +18,4 @@ public class OrganizationMemberResource extends AbstractApplicationResource<
                 props.getRequestingUserId(), props.getPathVariableIds().get("organizationId"));
     }
 
-    @Override
-    public boolean hasCreatePermissions(OrganizationMember entityToCreate, RQRSLifecycleProperties props) {
-        return this.service.isOwnerOfOrganization(
-                props.getRequestingUserId(), props.getPathVariableIds().get("organizationId"));
-    }
-
 }
