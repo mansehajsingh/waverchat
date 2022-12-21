@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.customframework;
+package com.waverchat.api.v1.framework;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;

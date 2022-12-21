@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.customframework;
+package com.waverchat.api.v1.framework;
 
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;

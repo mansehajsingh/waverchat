@@ -1,16 +1,13 @@
 package com.waverchat.api.v1.resources.organization;
 
-import com.waverchat.api.v1.customframework.AbstractEntity;
-import com.waverchat.api.v1.exceptions.ValidationException;
+import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity

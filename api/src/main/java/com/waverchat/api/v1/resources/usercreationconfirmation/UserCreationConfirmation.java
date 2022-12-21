@@ -1,8 +1,7 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
 import com.waverchat.api.v1.resources.user.UserConstants;
-import com.waverchat.api.v1.customframework.AbstractEntity;
-import com.waverchat.api.v1.exceptions.ValidationException;
+import com.waverchat.api.v1.framework.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(

@@ -1,15 +1,11 @@
 package com.waverchat.api.v1.resources.organizationmember;
 
-import com.waverchat.api.v1.customframework.AbstractEntity;
-import com.waverchat.api.v1.exceptions.ValidationException;
+import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.resources.organization.Organization;
 import com.waverchat.api.v1.resources.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(

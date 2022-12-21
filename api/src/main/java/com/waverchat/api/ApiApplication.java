@@ -1,6 +1,6 @@
 package com.waverchat.api;
 
-import com.waverchat.api.v1.customframework.BaseRepositoryImpl;
+import com.waverchat.api.v1.framework.BaseRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;

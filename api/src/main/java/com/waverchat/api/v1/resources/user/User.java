@@ -1,10 +1,8 @@
 package com.waverchat.api.v1.resources.user;
 
 import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
-import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
-import com.waverchat.api.v1.customframework.AbstractEntity;
-import com.waverchat.api.v1.exceptions.ValidationException;
+import com.waverchat.api.v1.framework.AbstractEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

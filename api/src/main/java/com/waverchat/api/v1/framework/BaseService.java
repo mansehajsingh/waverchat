@@ -1,15 +1,25 @@
-package com.waverchat.api.v1.customframework;
+package com.waverchat.api.v1.framework;
 
+import com.waverchat.api.v1.exceptions.NotFoundException;
 import com.waverchat.api.v1.resources.user.UserConstants;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-public abstract class AbstractService<E extends AbstractEntity> {
+public interface BaseService<E extends AbstractEntity> {
+    E find(UUID id) throws NotFoundException;
 
-    protected Sort createSort(boolean defaultSortAsc, String defaultSortField, Map<String, String> queryParams) {
+    Optional<E> create(E entity);
+
+    Optional<E> update(E entity) throws NotFoundException;
+
+    Optional<E> delete(E entity) throws NotFoundException;
+
+    default Sort createSort(boolean defaultSortAsc, String defaultSortField, Map<String, String> queryParams) {
         String sortByField = defaultSortField;
         boolean sortAscending = defaultSortAsc;
 
@@ -22,12 +32,12 @@ public abstract class AbstractService<E extends AbstractEntity> {
         Sort sort;
 
         if (sortAscending) sort = Sort.by(sortByField).ascending();
-        else sort = sort = Sort.by(sortByField).descending();
+        else sort = Sort.by(sortByField).descending();
 
         return sort;
     }
 
-    public Pageable createPageable(
+    default Pageable createPageable(
             int defaultPage,
             int defaultLimit,
             int maxLimit,
