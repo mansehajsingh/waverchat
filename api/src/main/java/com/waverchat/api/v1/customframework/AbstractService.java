@@ -1,35 +1,13 @@
 package com.waverchat.api.v1.customframework;
 
 import com.waverchat.api.v1.resources.user.UserConstants;
-import com.waverchat.api.v1.exceptions.ConflictException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
-public abstract class AbstractApplicationService<E extends AbstractApplicationEntity> {
-
-    public void auditForCreate(E entityToCreate, RQRSLifecycleProperties props) throws ConflictException {}
-
-    public void auditForEdit(E candidateEntity, RQRSLifecycleProperties props) throws ConflictException {}
-
-    public Optional<E> create(E entityToCreate, RQRSLifecycleProperties props) {
-        return Optional.empty();
-    };
-
-    public Optional<E> getById(UUID id, RQRSLifecycleProperties props) {
-        return Optional.empty();
-    }
-
-    public Page<E> getAll(RQRSLifecycleProperties props) { return Page.empty(); }
-
-    public Optional<E> edit(UUID id, E candidateEntity, RQRSLifecycleProperties props) {
-        return Optional.empty();
-    }
+public abstract class AbstractService<E extends AbstractEntity> {
 
     protected Sort createSort(boolean defaultSortAsc, String defaultSortField, Map<String, String> queryParams) {
         String sortByField = defaultSortField;

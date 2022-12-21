@@ -1,7 +1,6 @@
 package com.waverchat.api.v1.resources.organizationmember;
 
-import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
-import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
+import com.waverchat.api.v1.customframework.AbstractEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.resources.organization.Organization;
 import com.waverchat.api.v1.resources.user.User;
@@ -20,7 +19,7 @@ import java.util.UUID;
         }
 )
 @Data
-public class OrganizationMember extends AbstractApplicationEntity {
+public class OrganizationMember extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -40,19 +39,6 @@ public class OrganizationMember extends AbstractApplicationEntity {
         this.type = type.getValue();
     }
 
-    public OrganizationMember(RQRSLifecycleProperties props) {
-        this.type = (String) props.getRequestBody().get("type");;
-
-        Organization org = new Organization();
-        org.setId(props.getPathVariableIds().get("organizationId"));
-        this.organization = org;
-
-        User user = new User();
-        UUID memberId = UUID.fromString((String) props.getRequestBody().get("userId"));
-        user.setId(memberId);
-        this.member = user;
-    }
-
     public OrganizationMembershipType getType() {
         return OrganizationMembershipType.parse(this.type);
     }
@@ -61,21 +47,4 @@ public class OrganizationMember extends AbstractApplicationEntity {
         this.type = type.getValue();
     }
 
-    @Override
-    public void validateForCreate() throws ValidationException {
-        boolean isValidType = false;
-
-        for (OrganizationMembershipType currType : OrganizationMembershipType.values()) {
-            if (this.type.equalsIgnoreCase(currType.getValue())) {
-                isValidType = true;
-                break;
-            }
-        }
-
-        if (!isValidType) {
-            List<String> validationExceptionMessages = new ArrayList<>();
-            validationExceptionMessages.add("Invalid type for organization member.");
-            throw new ValidationException(validationExceptionMessages);
-        }
-    }
 }

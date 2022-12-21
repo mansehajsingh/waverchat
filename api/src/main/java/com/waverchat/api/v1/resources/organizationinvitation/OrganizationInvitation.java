@@ -1,9 +1,10 @@
 package com.waverchat.api.v1.resources.organizationinvitation;
 
-import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
-import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
+import com.waverchat.api.v1.customframework.AbstractEntity;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.resources.organization.Organization;
 import com.waverchat.api.v1.resources.user.User;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ import java.util.UUID;
         }
 )
 @Data
-public class OrganizationInvitation extends AbstractApplicationEntity {
+public class OrganizationInvitation extends AbstractEntity {
 
     @NotNull
     @ManyToOne
@@ -29,16 +30,9 @@ public class OrganizationInvitation extends AbstractApplicationEntity {
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
+    @Transient
+    private OrganizationInvitationDecision decision = OrganizationInvitationDecision.UNKNOWN;
+
     public OrganizationInvitation() {}
-
-    public OrganizationInvitation(RQRSLifecycleProperties props) {
-        Organization org = new Organization();
-        org.setId(props.getPathVariableIds().get("organizationId"));
-        this.organization = org;
-
-        User cand = new User();
-        cand.setId(UUID.fromString((String) props.getRequestBody().get("userId")));
-        this.candidate = cand;
-    }
 
 }

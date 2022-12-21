@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.customframework;
 
-import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,7 +12,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @Data
-public abstract class AbstractApplicationEntity {
+public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue
@@ -24,11 +23,5 @@ public abstract class AbstractApplicationEntity {
 
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
-
-    public void edit(RQRSLifecycleProperties props) {}
-
-    public void validateForCreate() throws ValidationException {}
-
-    public void validateForEdit() throws ValidationException {}
 
 }

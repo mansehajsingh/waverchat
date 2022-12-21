@@ -1,10 +1,9 @@
 package com.waverchat.api.v1.resources.user;
 
-import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import com.waverchat.api.v1.authentication.session.Session;
-import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
+import com.waverchat.api.v1.customframework.AbstractEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +27,7 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends AbstractApplicationEntity {
+public class User extends AbstractEntity {
 
     @NotNull
     private String email;
@@ -76,34 +75,4 @@ public class User extends AbstractApplicationEntity {
         this.setDeleted(deleted);
     }
 
-    @Override
-    public void edit(RQRSLifecycleProperties props) {
-        if (props.getRequestBody().containsKey("username"))
-            this.username = (String) props.getRequestBody().get("username");
-        if (props.getRequestBody().containsKey("firstName"))
-            this.firstName = (String) props.getRequestBody().get("firstName");
-        if (props.getRequestBody().containsKey("lastName"))
-            this.lastName = (String) props.getRequestBody().get("lastName");
-    }
-
-    @Override
-    public void validateForEdit() throws ValidationException {
-        List<String> validationExceptionMessages = new ArrayList<>();
-
-        if (!UserCreationConfirmationUtil.isValidUsername(this.getUsername())) {
-            validationExceptionMessages.add("Username is invalid.");
-        }
-        if (!UserCreationConfirmationUtil.isValidFirstName(this.getFirstName())) {
-            validationExceptionMessages.add("First name is invalid.");
-        }
-        if (!UserCreationConfirmationUtil.isValidLastName(this.getLastName())) {
-            validationExceptionMessages.add("Last name is invalid.");
-        }
-
-        // if there were any error messages added during validation we want to throw an exception
-        // containing all those messages
-        if (!validationExceptionMessages.isEmpty()) {
-            throw new ValidationException(validationExceptionMessages);
-        }
-    }
 }

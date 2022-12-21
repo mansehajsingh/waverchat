@@ -3,6 +3,7 @@ package com.waverchat.api.integration.v1.util;
 import com.google.gson.Gson;
 import com.mysema.commons.lang.Pair;
 import com.waverchat.api.v1.resources.organization.Organization;
+import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmation;
@@ -197,5 +198,14 @@ public class App {
         return mockMvc.perform(get("/api/v1/organizations/" + id.toString())
                 .header("authorization", "Bearer " + accessToken));
     }
+
+//    public static ResultActions createOrganizationMember(UUID orgId, UUID memberId,  String accessToken, MockMvc mockMvc)
+//        throws Exception
+//    {
+//        Map<String, String> requestBody = new HashMap<>() {{
+//            put("organizationId", orgId.toString());
+//            put("userId", memberId.toString());
+//        }};
+//    }
 
 }

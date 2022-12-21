@@ -1,8 +1,7 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
-import com.waverchat.api.v1.customframework.RQRSLifecycleProperties;
 import com.waverchat.api.v1.resources.user.UserConstants;
-import com.waverchat.api.v1.customframework.AbstractApplicationEntity;
+import com.waverchat.api.v1.customframework.AbstractEntity;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +28,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationConfirmation extends AbstractApplicationEntity {
+public class UserCreationConfirmation extends AbstractEntity {
 
     @NotNull
     private String email;
@@ -60,43 +59,5 @@ public class UserCreationConfirmation extends AbstractApplicationEntity {
 
     @NotNull
     private boolean deleted = false;
-
-    public UserCreationConfirmation(RQRSLifecycleProperties props) {
-        this.email = (String) props.getRequestBody().get("email");
-        this.username = (String) props.getRequestBody().get("username");
-        this.password = (String) props.getRequestBody().get("password");
-        this.firstName = (String) props.getRequestBody().get("firstName");
-        this.lastName = (String) props.getRequestBody().get("lastName");
-        this.superUser = false;
-        this.deleted = false;
-    }
-
-    @Override
-    public void validateForCreate() throws ValidationException {
-        List<String> validationExceptionMessages = new ArrayList<>();
-
-        // checking if the user provided valid credentials
-        if (!UserCreationConfirmationUtil.isValidEmail(this.getEmail())) {
-            validationExceptionMessages.add("Email is invalid");
-        }
-        if (!UserCreationConfirmationUtil.isValidPassword(this.getPassword())) {
-            validationExceptionMessages.add("Password is invalid");
-        }
-        if (!UserCreationConfirmationUtil.isValidUsername(this.getUsername())) {
-            validationExceptionMessages.add("Username is invalid.");
-        }
-        if (!UserCreationConfirmationUtil.isValidFirstName(this.getFirstName())) {
-            validationExceptionMessages.add("First name is invalid.");
-        }
-        if (!UserCreationConfirmationUtil.isValidLastName(this.getLastName())) {
-            validationExceptionMessages.add("Last name is invalid.");
-        }
-
-        // if there were any error messages added during validation we want to throw an exception
-        // containing all those messages
-        if (!validationExceptionMessages.isEmpty()) {
-            throw new ValidationException(validationExceptionMessages);
-        }
-    }
 
 }

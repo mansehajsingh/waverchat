@@ -26,6 +26,10 @@
                 <method>POST</method>
                 <uri>api/v1/organizations/{}/invitations</uri>
             </endpoint>
+            <endpoint>
+                <method>PUT</method>
+                <uri>api/v1/organizations/{}/invitations/{}</uri>
+            </endpoint>
         </authenticatedEndpoints>
     </v1>
 </authentication>
