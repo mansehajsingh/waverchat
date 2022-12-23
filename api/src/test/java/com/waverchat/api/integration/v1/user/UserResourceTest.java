@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.mysema.commons.lang.Pair;
 import com.waverchat.api.integration.v1.util.App;
 import com.waverchat.api.integration.v1.util.TestUtils;
-import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import org.junit.Test;

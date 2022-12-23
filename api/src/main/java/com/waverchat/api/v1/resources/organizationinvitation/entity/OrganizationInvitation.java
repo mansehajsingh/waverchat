@@ -1,8 +1,8 @@
-package com.waverchat.api.v1.resources.organizationinvitation;
+package com.waverchat.api.v1.resources.organizationinvitation.entity;
 
 import com.waverchat.api.v1.framework.AbstractEntity;
-import com.waverchat.api.v1.resources.organization.Organization;
-import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.organization.entity.Organization;
+import com.waverchat.api.v1.resources.user.entity.User;
 import lombok.Data;
 
 import javax.persistence.*;

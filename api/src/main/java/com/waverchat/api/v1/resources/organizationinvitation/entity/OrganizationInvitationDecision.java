@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.resources.organizationinvitation;
+package com.waverchat.api.v1.resources.organizationinvitation.entity;
 
 public enum OrganizationInvitationDecision {
 

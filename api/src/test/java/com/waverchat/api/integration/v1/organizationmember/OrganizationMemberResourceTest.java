@@ -1,28 +1,12 @@
 package com.waverchat.api.integration.v1.organizationmember;
 
-import com.google.gson.Gson;
-import com.mysema.commons.lang.Pair;
-import com.waverchat.api.integration.v1.util.App;
-import com.waverchat.api.v1.resources.organization.Organization;
-import com.waverchat.api.v1.resources.organization.OrganizationRepository;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMemberRepository;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMembershipType;
-import com.waverchat.api.v1.resources.user.User;
-import com.waverchat.api.v1.resources.user.UserRepository;
-import org.junit.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
-import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

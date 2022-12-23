@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.organizationinvitation;
 
 import com.waverchat.api.v1.framework.BaseRepository;
+import com.waverchat.api.v1.resources.organizationinvitation.entity.OrganizationInvitation;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 

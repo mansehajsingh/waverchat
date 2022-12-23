@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation;
 
 import com.waverchat.api.v1.framework.BaseRepository;
+import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

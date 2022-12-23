@@ -1,7 +1,8 @@
-package com.waverchat.api.v1.resources.organization;
+package com.waverchat.api.v1.resources.organization.entity;
 
 import com.waverchat.api.v1.framework.AbstractEntity;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
+import com.waverchat.api.v1.resources.organization.OrganizationConstants;
+import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMember;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 public class Organization extends AbstractEntity {
 
     @NotNull
-    @Length(min=OrganizationConstants.MIN_ORG_NAME_LENGTH, max=OrganizationConstants.MAX_ORG_NAME_LENGTH)
+    @Length(min= OrganizationConstants.MIN_ORG_NAME_LENGTH, max=OrganizationConstants.MAX_ORG_NAME_LENGTH)
     private String name;
 
     @NotNull

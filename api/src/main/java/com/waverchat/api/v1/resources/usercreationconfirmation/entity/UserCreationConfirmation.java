@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.resources.usercreationconfirmation;
+package com.waverchat.api.v1.resources.usercreationconfirmation.entity;
 
 import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.resources.user.UserConstants;

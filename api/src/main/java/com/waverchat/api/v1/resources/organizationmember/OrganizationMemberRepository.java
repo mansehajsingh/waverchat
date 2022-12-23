@@ -1,6 +1,8 @@
 package com.waverchat.api.v1.resources.organizationmember;
 
 import com.waverchat.api.v1.framework.BaseRepository;
+import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMember;
+import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMembershipType;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

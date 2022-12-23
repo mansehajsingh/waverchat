@@ -2,12 +2,10 @@ package com.waverchat.api.integration.v1.util;
 
 import com.google.gson.Gson;
 import com.mysema.commons.lang.Pair;
-import com.waverchat.api.v1.resources.organization.Organization;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
-import com.waverchat.api.v1.resources.user.User;
+import com.waverchat.api.v1.resources.organization.entity.Organization;
+import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.resources.user.UserRepository;
-import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmation;
-import org.aspectj.weaver.ast.Or;
+import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

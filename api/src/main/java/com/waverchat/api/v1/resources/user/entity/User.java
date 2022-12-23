@@ -1,8 +1,9 @@
-package com.waverchat.api.v1.resources.user;
+package com.waverchat.api.v1.resources.user.entity;
 
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.framework.AbstractEntity;
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
+import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMember;
+import com.waverchat.api.v1.resources.user.UserConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

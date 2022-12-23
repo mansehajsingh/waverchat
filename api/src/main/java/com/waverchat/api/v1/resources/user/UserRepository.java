@@ -1,6 +1,7 @@
 package com.waverchat.api.v1.resources.user;
 
 import com.waverchat.api.v1.framework.BaseRepository;
+import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

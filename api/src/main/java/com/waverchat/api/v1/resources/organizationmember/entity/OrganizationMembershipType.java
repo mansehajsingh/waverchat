@@ -1,4 +1,4 @@
-package com.waverchat.api.v1.resources.organizationmember;
+package com.waverchat.api.v1.resources.organizationmember.entity;
 
 public enum OrganizationMembershipType {
     
