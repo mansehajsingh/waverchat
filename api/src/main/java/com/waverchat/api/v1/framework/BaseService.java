@@ -1,28 +1,71 @@
 package com.waverchat.api.v1.framework;
 
+import com.waverchat.api.v1.exceptions.ConflictException;
 import com.waverchat.api.v1.exceptions.NotFoundException;
-import com.waverchat.api.v1.resources.user.UserConstants;
+import com.waverchat.api.v1.exceptions.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-public interface BaseService<E extends AbstractEntity> {
-    E findById(Long id) throws NotFoundException;
+public class BaseService<E extends AbstractEntity, R extends BaseRepository<E, Long>> {
 
-    Optional<E> create(E entity);
+    @Autowired
+    protected R repository;
 
-    Optional<E> update(E entity) throws NotFoundException;
+    public E findById(Long id) throws NotFoundException {
+        Optional<E> entityOpt = this.repository.findById(id);
 
-    Optional<E> delete(E entity) throws NotFoundException;
+        if (entityOpt.isPresent())
+            return entityOpt.get();
 
-    default Sort createSort(boolean defaultSortAsc, String defaultSortField, Map<String, String> queryParams) {
+        throw new NotFoundException("No resource exists with id " + id );
+    }
+
+    public void auditForCreate(E entity) throws ConflictException {}
+
+    public E create(E entity) throws ValidationException, ConflictException {
+        entity.validateForCreate();
+
+        auditForCreate(entity);
+
+        return this.repository.save(entity);
+    }
+
+    public void auditForUpdate(E entity) throws ConflictException {}
+
+    public E update(E updatedEntity) throws ValidationException, ConflictException {
+        updatedEntity.validateForUpdate();
+
+        auditForUpdate(updatedEntity);
+
+        return this.repository.save(updatedEntity);
+    }
+
+    public E delete(E entity) throws NotFoundException {
+
+        E fetchedEntity = findById(entity.getId());
+
+        this.repository.deleteById(fetchedEntity.getId());
+
+        return fetchedEntity;
+    }
+
+    protected Sort createSort(
+            boolean defaultSortAsc,
+            String defaultSortField,
+            String [] supportedSortFields,
+            Map<String, String> queryParams
+    ) {
         String sortByField = defaultSortField;
         boolean sortAscending = defaultSortAsc;
 
-        if (queryParams.containsKey("sortBy") && UserConstants.SUPPORTED_SORT_TAGS.contains(queryParams.get("sortBy")))
+        if (queryParams.containsKey("sortBy")
+                && Arrays.stream(supportedSortFields).anyMatch(queryParams.get("sortBy")::equalsIgnoreCase))
         {
             sortByField = queryParams.get("sortBy");
             sortAscending = queryParams.containsKey("sort") && queryParams.get("sort").equalsIgnoreCase("ASC");
@@ -36,7 +79,7 @@ public interface BaseService<E extends AbstractEntity> {
         return sort;
     }
 
-    default Pageable createPageable(
+    protected Pageable createPageable(
             int defaultPage,
             int defaultLimit,
             int maxLimit,

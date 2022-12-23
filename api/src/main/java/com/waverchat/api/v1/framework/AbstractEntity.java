@@ -1,5 +1,6 @@
 package com.waverchat.api.v1.framework;
 
+import com.waverchat.api.v1.exceptions.ValidationException;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,5 +23,9 @@ public abstract class AbstractEntity {
 
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
+
+    public void validateForCreate() throws ValidationException {}
+
+    public void validateForUpdate() throws ValidationException {}
 
 }
