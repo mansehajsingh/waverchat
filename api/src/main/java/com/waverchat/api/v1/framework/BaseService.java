@@ -8,10 +8,9 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface BaseService<E extends AbstractEntity> {
-    E find(UUID id) throws NotFoundException;
+    E findById(Long id) throws NotFoundException;
 
     Optional<E> create(E entity);
 

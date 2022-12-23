@@ -1,12 +1,11 @@
 package com.waverchat.api.v1.authentication.session;
 
-import com.waverchat.api.v1.resources.user.User;
 import com.waverchat.api.v1.exceptions.NotFoundException;
+import com.waverchat.api.v1.resources.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SessionService {
@@ -14,7 +13,7 @@ public class SessionService {
     @Autowired
     private SessionRepository sessionRepository;
 
-    public Session getById(UUID id) throws NotFoundException {
+    public Session getById(Long id) throws NotFoundException {
         Optional<Session> result = this.sessionRepository.findById(id);
 
         if (result.isPresent()) {
@@ -28,7 +27,7 @@ public class SessionService {
         return this.sessionRepository.save(session);
     }
 
-    public void deleteSessionById(UUID id) {
+    public void deleteSessionById(Long id) {
         this.sessionRepository.deleteById(id);
     }
 

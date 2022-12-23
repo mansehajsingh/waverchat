@@ -12,7 +12,6 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 public class AuthUtils {
 
@@ -24,7 +23,7 @@ public class AuthUtils {
 
     private AuthUtils() {}
 
-    public static String issueAccessToken(UUID sessionId, UUID userId) {
+    public static String issueAccessToken(Long sessionId, Long userId) {
         // Setting age of access token to be 10 hours
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -49,7 +48,7 @@ public class AuthUtils {
         return accessToken;
     }
 
-    public static String issueRefreshToken(UUID sessionId, UUID userId) {
+    public static String issueRefreshToken(Long sessionId, Long userId) {
         // Setting age of refresh token
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();

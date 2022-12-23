@@ -102,7 +102,7 @@ public class OrganizationResourceTest {
         assert ownerResponse.containsKey("updatedAt");
 
         Optional<Organization> persistedOrgOpt = this.organizationRepository.findById(
-                UUID.fromString((String) response.get("id"))
+                Long.parseLong((String) response.get("id"))
         );
 
         assert persistedOrgOpt.isPresent();
@@ -111,8 +111,8 @@ public class OrganizationResourceTest {
         assertEquals(generatedOrg.getName(), persistedOrg.getName());
         assertEquals(generatedOrg.getDescription(), persistedOrg.getDescription());
 
-        Optional<OrganizationMember> persistedOwnerOpt =
-                this.organizationMemberRepository.findByOrganization_Id(UUID.fromString((String) response.get("id")));
+        Optional<OrganizationMember> persistedOwnerOpt = this.organizationMemberRepository
+                        .findByOrganization_Id(Long.parseLong((String) response.get("id")));
 
         assert persistedOwnerOpt.isPresent();
         OrganizationMember persistedOwner = persistedOwnerOpt.get();

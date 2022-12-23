@@ -8,10 +8,9 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface OrganizationMemberRepository extends BaseRepository<OrganizationMember, UUID>,
+public interface OrganizationMemberRepository extends BaseRepository<OrganizationMember, Long>,
         QuerydslPredicateExecutor <OrganizationMember>
 {
 
@@ -19,21 +18,21 @@ public interface OrganizationMemberRepository extends BaseRepository<Organizatio
         return findAll(query.getBuilder(), pageable);
     }
 
-    boolean existsByOrganization_IdAndMember_Id(UUID organizationId, UUID memberId);
+    boolean existsByOrganization_IdAndMember_Id(Long organizationId, Long memberId);
 
-    OrganizationMember findByOrganization_IdAndType(UUID organizationId, String type);
+    OrganizationMember findByOrganization_IdAndType(Long organizationId, String type);
 
-    default OrganizationMember findByOrganization_IdAndType(UUID organizationId, OrganizationMembershipType type) {
+    default OrganizationMember findByOrganization_IdAndType(Long organizationId, OrganizationMembershipType type) {
         return findByOrganization_IdAndType(organizationId, type.getValue());
     }
 
     default boolean existsByOrganization_IdAndMember_IdAndType(
-            UUID organizationId, UUID memberId, OrganizationMembershipType type) {
+            Long organizationId, Long memberId, OrganizationMembershipType type) {
         return existsByOrganization_IdAndMember_IdAndType(organizationId, memberId, type.getValue());
     }
 
-    boolean existsByOrganization_IdAndMember_IdAndType(UUID organizationId, UUID memberId, String type);
+    boolean existsByOrganization_IdAndMember_IdAndType(Long organizationId, Long memberId, String type);
 
-    Optional<OrganizationMember> findByOrganization_Id(UUID organizationId);
+    Optional<OrganizationMember> findByOrganization_Id(Long organizationId);
 
 }

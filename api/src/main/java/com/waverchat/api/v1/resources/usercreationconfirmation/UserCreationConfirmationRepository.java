@@ -4,12 +4,11 @@ import com.waverchat.api.v1.framework.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface UserCreationConfirmationRepository extends BaseRepository<UserCreationConfirmation, UUID> {
+public interface UserCreationConfirmationRepository extends BaseRepository<UserCreationConfirmation, Long> {
 
-    Optional<UserCreationConfirmation> findById(UUID uuid);
+    Optional<UserCreationConfirmation> findById(Long id);
 
     void deleteAllByEmailIgnoreCase(String email);
 
@@ -17,7 +16,7 @@ public interface UserCreationConfirmationRepository extends BaseRepository<UserC
 
     boolean existsByEmailIgnoreCase(String email);
 
-    void deleteById(UUID uuid);
+    void deleteById(Long id);
 
     Optional<UserCreationConfirmation> findByUsernameIgnoreCase(String username);
 

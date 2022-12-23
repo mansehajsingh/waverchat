@@ -12,7 +12,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
@@ -54,7 +53,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
-                request.setAttribute("requestingUser", UUID.fromString(claims.getSubject()));
+                request.setAttribute("requestingUser", Long.parseLong(claims.getSubject()));
                 return true;
             }
         }

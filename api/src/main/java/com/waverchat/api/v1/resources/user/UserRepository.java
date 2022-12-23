@@ -8,16 +8,15 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface UserRepository extends BaseRepository<User, UUID>, QuerydslPredicateExecutor<User> {
+public interface UserRepository extends BaseRepository<User, Long>, QuerydslPredicateExecutor<User> {
 
     default Page<User> findAll(AppQuery query, Pageable pageable) {
         return findAll(query.getBuilder(), pageable);
     }
 
-    Optional<User> findById(UUID id);
+    Optional<User> findById(Long id);
 
     Optional<User> findByEmailIgnoreCase(String email);
 

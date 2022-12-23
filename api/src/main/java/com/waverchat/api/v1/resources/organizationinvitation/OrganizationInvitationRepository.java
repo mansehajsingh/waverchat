@@ -4,12 +4,10 @@ import com.waverchat.api.v1.framework.BaseRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface OrganizationInvitationRepository extends BaseRepository<OrganizationInvitation, UUID>,
+public interface OrganizationInvitationRepository extends BaseRepository<OrganizationInvitation, Long>,
         QuerydslPredicateExecutor<OrganizationInvitation> {
 
-    boolean existsByCandidate_IdAndOrganization_Id(UUID candidateId, UUID organizationId);
+    boolean existsByCandidate_IdAndOrganization_Id(Long candidateId, Long organizationId);
 
 }

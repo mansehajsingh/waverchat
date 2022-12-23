@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
 @MappedSuperclass
 @Data
@@ -16,7 +15,7 @@ public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private Long id;
 
     @CreationTimestamp
     private ZonedDateTime createdAt;

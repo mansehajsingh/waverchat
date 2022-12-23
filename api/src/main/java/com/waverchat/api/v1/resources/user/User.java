@@ -1,8 +1,8 @@
 package com.waverchat.api.v1.resources.user;
 
-import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import com.waverchat.api.v1.authentication.session.Session;
 import com.waverchat.api.v1.framework.AbstractEntity;
+import com.waverchat.api.v1.resources.organizationmember.OrganizationMember;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(
