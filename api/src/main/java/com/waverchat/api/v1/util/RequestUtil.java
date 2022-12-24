@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public class RequestUtil {
 
-    public static Optional<UUID> getRequestingUser(HttpServletRequest request) {
+    public static Long getRequestingUser(HttpServletRequest request) {
         Object requestingUser = request.getAttribute("requestingUser");
 
         if (requestingUser == AuthUtils.Enumerables.ANONYMOUS_USER) {
-            return Optional.ofNullable(null);
+            return null;
         }
 
-        return Optional.ofNullable((UUID) requestingUser);
+        return (Long) requestingUser;
     }
 }

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UCCService extends BaseService<UserCreationConfirmation, UserCreationConfirmationRepository> {
 
-    protected final static Logger log = LoggerFactory.getLogger(UCCResource.class);
+    protected final static Logger log = LoggerFactory.getLogger(UCCService.class);
 
     @Autowired
     protected UserRepository userRepository;
