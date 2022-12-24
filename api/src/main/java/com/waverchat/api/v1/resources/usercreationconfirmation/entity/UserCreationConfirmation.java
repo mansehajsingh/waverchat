@@ -1,7 +1,11 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation.entity;
 
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.framework.AbstractEntity;
+import com.waverchat.api.v1.framework.Loggable;
 import com.waverchat.api.v1.resources.user.UserConstants;
+import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
+import com.waverchat.api.v1.resources.usercreationconfirmation.dto.request.UCCCreateRQ;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +19,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -85,4 +91,42 @@ public class UserCreationConfirmation extends AbstractEntity {
         this.verificationCode = generateVerificationCode();
     }
 
+    public Loggable loggable() {
+        return new Loggable("UserCreationConfirmation")
+                .line("id", this.id)
+                .line("email", this.email)
+                .line("username", this.username)
+                .line("passwordHash", this.passwordHash)
+                .line("firstName", this.firstName)
+                .line("lastName", this.lastName)
+                .line("verificationCode", this.verificationCode);
+    }
+
+    @Override
+    public void validateForCreate() throws ValidationException {
+        List<String> messages = new ArrayList<>();
+
+        if (!UserCreationConfirmationUtil.isValidEmail(this.email)) {
+            messages.add("Email is invalid.");
+        }
+
+        if (!UserCreationConfirmationUtil.isValidUsername(this.username)) {
+            messages.add("Username is invalid.");
+        }
+
+        if (!UserCreationConfirmationUtil.isValidPassword(this.password)) {
+            messages.add("Password is invalid.");
+        }
+
+        if (!UserCreationConfirmationUtil.isValidFirstName(this.firstName)) {
+            messages.add("First name is invalid.");
+        }
+
+        if (!UserCreationConfirmationUtil.isValidLastName(this.lastName)) {
+            messages.add("Last name is invalid");
+        }
+
+        if (messages.size() > 0)
+            throw new ValidationException(messages);
+    }
 }

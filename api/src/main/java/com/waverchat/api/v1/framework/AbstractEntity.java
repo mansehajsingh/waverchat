@@ -16,13 +16,13 @@ public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 
     @CreationTimestamp
-    private ZonedDateTime createdAt;
+    protected ZonedDateTime createdAt;
 
     @UpdateTimestamp
-    private ZonedDateTime updatedAt;
+    protected ZonedDateTime updatedAt;
 
     public void validateForCreate() throws ValidationException {}
 
