@@ -75,4 +75,12 @@ public class User extends AbstractEntity {
         this.setDeleted(deleted);
     }
 
+    public User (String email, String username, String passwordHash, String firstName, String lastName) {
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setPasswordHash(passwordHash);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+    }
+
 }

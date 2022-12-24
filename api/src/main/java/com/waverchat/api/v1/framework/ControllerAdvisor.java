@@ -1,6 +1,8 @@
 package com.waverchat.api.v1.framework;
 
 import com.waverchat.api.v1.exceptions.ConflictException;
+import com.waverchat.api.v1.exceptions.ForbiddenException;
+import com.waverchat.api.v1.exceptions.NotFoundException;
 import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.http.response.MessageResponse;
 import com.waverchat.api.v1.http.response.MultiMessageResponse;
@@ -24,6 +26,20 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<MessageResponse> handleConflictException(ConflictException ex) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(new MessageResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<MessageResponse> handleForbiddenException(ForbiddenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new MessageResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<MessageResponse> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(new MessageResponse(ex.getMessage()));
     }
 
