@@ -19,7 +19,11 @@ public interface UserRepository extends BaseRepository<User, Long>, QuerydslPred
 
     Optional<User> findById(Long id);
 
+    Optional<User> findByIdAndDeleted(Long id, boolean deleted);
+
     Optional<User> findByEmailIgnoreCaseAndDeleted(String email, boolean deleted);
+
+    Optional<User> findByEmailIgnoreCase(String email);
 
     boolean existsByUsernameIgnoreCase(String username);
 

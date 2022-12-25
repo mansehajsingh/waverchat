@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class AbstractResource {
 
-    protected static Long getRequestingUser(HttpServletRequest request) {
+    protected static Long extractRequestingUserId(HttpServletRequest request) {
         return RequestUtil.getRequestingUser(request);
     }
 
