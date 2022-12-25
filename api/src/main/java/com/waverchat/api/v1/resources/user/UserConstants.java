@@ -27,7 +27,7 @@ public class UserConstants {
 
     public static final boolean DEFAULT_SORT_IS_ASCENDING = false;
 
-    public static final List<String> SUPPORTED_SORT_TAGS =
+    public static final List<String> SUPPORTED_SORT_FIELDS =
             Arrays.asList(new String[] {"email", "username", "firstName", "lastName", "createdAt", "updatedAt"});
 
     public static final Map<String, StringPath> QUERYABLE_STR_PATHS = new HashMap<>() {{

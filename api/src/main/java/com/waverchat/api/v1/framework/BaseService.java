@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,14 +59,14 @@ public class BaseService<E extends AbstractEntity, R extends BaseRepository<E, L
     protected Sort createSort(
             boolean defaultSortAsc,
             String defaultSortField,
-            String [] supportedSortFields,
+            List<String> supportedSortFields,
             Map<String, String> queryParams
     ) {
         String sortByField = defaultSortField;
         boolean sortAscending = defaultSortAsc;
 
         if (queryParams.containsKey("sortBy")
-                && Arrays.stream(supportedSortFields).anyMatch(queryParams.get("sortBy")::equalsIgnoreCase))
+                && supportedSortFields.stream().anyMatch(queryParams.get("sortBy")::equalsIgnoreCase))
         {
             sortByField = queryParams.get("sortBy");
             sortAscending = queryParams.containsKey("sort") && queryParams.get("sort").equalsIgnoreCase("ASC");

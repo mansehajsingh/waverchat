@@ -4,12 +4,19 @@ package com.waverchat.api.v1.resources.user.service;
 import com.waverchat.api.v1.exceptions.ForbiddenException;
 import com.waverchat.api.v1.exceptions.NotFoundException;
 import com.waverchat.api.v1.framework.BaseService;
+import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.resources.user.UserRepository;
+import com.waverchat.api.v1.resources.user.entity.QUser;
 import com.waverchat.api.v1.resources.user.entity.User;
+import com.waverchat.api.v1.util.query.AppQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,6 +59,23 @@ public class UserService extends BaseService<User, UserRepository> {
         }
 
         return userOpt.get();
+    }
+
+    public Page<User> findAll(Map<String, String> queryParams) {
+        QUser quser = QUser.user;
+        AppQuery query = new AppQuery();
+
+        query.andAllStringQueries(UserConstants.QUERYABLE_STR_PATHS, queryParams);
+
+        query.andDefaultDatePathBehaviour(quser.createdAt, quser.updatedAt, queryParams);
+
+        Sort sort = this.createSort(UserConstants.DEFAULT_SORT_IS_ASCENDING,
+                UserConstants.DEFAULT_SORT_FIELD, UserConstants.SUPPORTED_SORT_FIELDS, queryParams);
+
+        Pageable pageable = this.createPageable(
+                0, 100, UserConstants.MAX_PAGE_SIZE, sort, queryParams);
+
+        return this.repository.findAll(query, pageable);
     }
 
 }

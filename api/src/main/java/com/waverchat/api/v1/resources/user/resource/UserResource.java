@@ -2,15 +2,20 @@ package com.waverchat.api.v1.resources.user.resource;
 
 import com.waverchat.api.v1.exceptions.NotFoundException;
 import com.waverchat.api.v1.framework.AbstractResource;
+import com.waverchat.api.v1.http.response.PageResponse;
+import com.waverchat.api.v1.resources.user.dto.response.UserGetAllRS;
 import com.waverchat.api.v1.resources.user.dto.response.UserGetRS;
 import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.resources.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import static com.waverchat.api.v1.util.Constants.BASE_URL;
 
@@ -22,6 +27,20 @@ public class UserResource extends AbstractResource {
 
     @Autowired
     public UserService userService;
+
+    @GetMapping
+    public ResponseEntity<PageResponse<User, UserGetAllRS>> getAll(
+            @RequestParam Map<String, String> queryParams
+    ) {
+        Page<User> users = this.userService.findAll(queryParams);
+
+        PageResponse<User, UserGetAllRS> responseBody =
+                new PageResponse<User, UserGetAllRS>(users, currUser -> UserGetAllRS.from(currUser));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseBody);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserGetRS> get(@PathVariable Long id) throws NotFoundException {
