@@ -10,7 +10,6 @@ import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationRepository;
 import com.waverchat.api.v1.resources.usercreationconfirmation.dto.request.UCCCreateRQ;
 import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
-import com.waverchat.api.v1.resources.usercreationconfirmation.resource.UCCResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class UCCService extends BaseService<UserCreationConfirmation, UserCreati
         if (this.repository.existsByUsernameIgnoreCase(candidate.getUsername())) {
             log.warn(failureMessage,
                     "UserCreationConfirmation exists with given username.", candidate.loggable());
-            throw new ConflictException("Email is already in use by an existing user creation confirmation.");
+            throw new ConflictException("Username is already in use by an existing user creation confirmation.");
         }
 
         if (this.userRepository.existsByEmailIgnoreCase(candidate.getEmail())) {

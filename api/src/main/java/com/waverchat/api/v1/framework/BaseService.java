@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,22 +26,22 @@ public class BaseService<E extends AbstractEntity, R extends BaseRepository<E, L
         throw new NotFoundException("No resource exists with id " + id );
     }
 
-    public void auditForCreate(E entity) throws ConflictException {}
+    public void auditForCreate(E prevEntity, E entity) throws ConflictException {}
 
-    public E create(E entity) throws ValidationException, ConflictException {
+    public E create(E prevEntity, E entity) throws ValidationException, ConflictException {
         entity.validateForCreate();
 
-        auditForCreate(entity);
+        auditForCreate(prevEntity, entity);
 
         return this.repository.save(entity);
     }
 
-    public void auditForUpdate(E entity) throws ConflictException {}
+    public void auditForUpdate(E prevEntity, E entity) throws ConflictException {}
 
-    public E update(E updatedEntity) throws ValidationException, ConflictException {
+    public E update(E prevEntity, E updatedEntity) throws ValidationException, ConflictException {
         updatedEntity.validateForUpdate();
 
-        auditForUpdate(updatedEntity);
+        auditForUpdate(prevEntity, updatedEntity);
 
         return this.repository.save(updatedEntity);
     }

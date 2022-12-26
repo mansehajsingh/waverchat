@@ -1,9 +1,11 @@
 package com.waverchat.api.v1.resources.user.entity;
 
 import com.waverchat.api.v1.authentication.session.Session;
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMember;
 import com.waverchat.api.v1.resources.user.UserConstants;
+import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,7 +31,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends AbstractEntity {
+public class User extends AbstractEntity<User> {
 
     @NotNull
     private String email;
@@ -82,5 +86,57 @@ public class User extends AbstractEntity {
         this.setFirstName(firstName);
         this.setLastName(lastName);
     }
+
+    @Override
+    public User clone() {
+        User clone = new User(this.email, this.username, this.passwordHash,
+                this.firstName, this.lastName, this.superUser, this.deleted);
+
+        clone.setId(this.id);
+        clone.setPassword(this.password);
+        clone.setCreatedAt(this.createdAt);
+        clone.setUpdatedAt(this.updatedAt);
+
+        return clone;
+    }
+
+    @Override
+    public User cloneFromDiff(User diff) {
+        User clone = this.clone();
+
+        if (diff.getUsername() != null) {
+            clone.setUsername(diff.getUsername());
+        }
+
+        if (diff.getFirstName() != null) {
+            clone.setFirstName(diff.getFirstName());
+        }
+
+        if (diff.getLastName() != null) {
+            clone.setLastName(diff.getLastName());
+        }
+
+        return clone;
+    }
+
+    @Override
+    public void validateForUpdate() throws ValidationException {
+         List<String> messages = new ArrayList<>();
+
+         if (!UserCreationConfirmationUtil.isValidUsername(this.username)) {
+             messages.add("Username is invalid.");
+         }
+
+         if (!UserCreationConfirmationUtil.isValidFirstName(this.firstName)) {
+             messages.add("First name is invalid.");
+         }
+
+         if (!UserCreationConfirmationUtil.isValidLastName(this.lastName)) {
+             messages.add("Last name is invalid");
+         }
+
+         if (messages.size() > 0)
+             throw new ValidationException(messages);
+     }
 
 }
