@@ -26,12 +26,12 @@ public class BaseService<E extends AbstractEntity, R extends BaseRepository<E, L
         throw new NotFoundException("No resource exists with id " + id );
     }
 
-    public void auditForCreate(E prevEntity, E entity) throws ConflictException {}
+    public void auditForCreate(E entity) throws ConflictException {}
 
-    public E create(E prevEntity, E entity) throws ValidationException, ConflictException {
+    public E create(E entity) throws ValidationException, ConflictException {
         entity.validateForCreate();
 
-        auditForCreate(prevEntity, entity);
+        auditForCreate(entity);
 
         return this.repository.save(entity);
     }
