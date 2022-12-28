@@ -5,7 +5,6 @@ import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.framework.Loggable;
 import com.waverchat.api.v1.resources.user.UserConstants;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationUtil;
-import com.waverchat.api.v1.resources.usercreationconfirmation.dto.request.UCCCreateRQ;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,5 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation.dto.request;
 
-import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.framework.DtoRQ;
 import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import lombok.Data;

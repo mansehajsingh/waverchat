@@ -2,7 +2,6 @@ package com.waverchat.api.v1.resources.user.service;
 
 
 import com.waverchat.api.v1.exceptions.ConflictException;
-import com.waverchat.api.v1.exceptions.ForbiddenException;
 import com.waverchat.api.v1.exceptions.NotFoundException;
 import com.waverchat.api.v1.framework.BaseService;
 import com.waverchat.api.v1.resources.user.UserConstants;
@@ -10,7 +9,6 @@ import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.resources.user.entity.QUser;
 import com.waverchat.api.v1.resources.user.entity.User;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationRepository;
-import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import com.waverchat.api.v1.util.query.AppQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

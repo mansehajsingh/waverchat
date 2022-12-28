@@ -3,8 +3,6 @@ package com.waverchat.api.v1.util;
 import com.waverchat.api.v1.authentication.AuthUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
-import java.util.UUID;
 
 public class RequestUtil {
 

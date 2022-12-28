@@ -1,7 +1,6 @@
 package com.waverchat.api.v1.framework;
 
 import com.waverchat.api.v1.exceptions.ValidationException;
-import com.waverchat.api.v1.resources.user.entity.User;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

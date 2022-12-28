@@ -1,7 +1,9 @@
 package com.waverchat.api.v1.resources.organization.entity;
 
+import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.framework.AbstractEntity;
 import com.waverchat.api.v1.resources.organization.OrganizationConstants;
+import com.waverchat.api.v1.resources.organization.OrganizationUtil;
 import com.waverchat.api.v1.resources.organizationmember.entity.OrganizationMember;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -10,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,4 +39,21 @@ public class Organization extends AbstractEntity {
         this.description = description;
     }
 
+    @Override
+    public void validateForCreate() throws ValidationException {
+        ArrayList<String> validationExceptionMessages = new ArrayList<String>();
+        boolean throwExcept = false;
+
+        if (!OrganizationUtil.isValidName(this.name)) {
+            validationExceptionMessages.add("Name is invalid.");
+            throwExcept = true;
+        }
+        if (!OrganizationUtil.isValidDescription(this.description)) {
+            validationExceptionMessages.add("Description is invalid.");
+            throwExcept = true;
+        }
+
+        if (throwExcept)
+            throw new ValidationException(validationExceptionMessages);
+    }
 }

@@ -1,7 +1,7 @@
 package com.waverchat.api.v1.resources.usercreationconfirmation.dto.response;
 
-import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import com.waverchat.api.v1.framework.DtoRS;
+import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
