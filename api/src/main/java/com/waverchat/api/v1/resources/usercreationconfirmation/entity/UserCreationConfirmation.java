@@ -34,6 +34,9 @@ import java.util.Random;
 @NoArgsConstructor
 public class UserCreationConfirmation extends AbstractEntity {
 
+    @Transient
+    public static final String TABLE_NAME = "user_creation_confirmations";
+
     @NotNull
     private int verificationCode;
 

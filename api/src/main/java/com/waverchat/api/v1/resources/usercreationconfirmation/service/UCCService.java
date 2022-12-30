@@ -7,6 +7,7 @@ import com.waverchat.api.v1.exceptions.ValidationException;
 import com.waverchat.api.v1.framework.BaseService;
 import com.waverchat.api.v1.resources.user.UserRepository;
 import com.waverchat.api.v1.resources.user.entity.User;
+import com.waverchat.api.v1.resources.usercreationconfirmation.UCCConstants;
 import com.waverchat.api.v1.resources.usercreationconfirmation.UserCreationConfirmationRepository;
 import com.waverchat.api.v1.resources.usercreationconfirmation.dto.request.UCCCreateRQ;
 import com.waverchat.api.v1.resources.usercreationconfirmation.entity.UserCreationConfirmation;
@@ -16,10 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 public class UCCService extends BaseService<UserCreationConfirmation, UserCreationConfirmationRepository> {
 
     protected final static Logger log = LoggerFactory.getLogger(UCCService.class);
+
+    private static final DateTimeFormatter batchDeleteExpiredDTF
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     protected UserRepository userRepository;
@@ -78,6 +86,20 @@ public class UCCService extends BaseService<UserCreationConfirmation, UserCreati
         this.repository.deleteAllByEmailIgnoreCase(candidate.getEmail());
 
         return createdUser;
+    }
+
+    /**
+     * Performs batch delete of all user creation confirmations that were created
+     * X or more days ago defined by UCCConstants.EXPIRY_LENGTH_DAYS
+     */
+    @Transactional
+    public void batchDeleteExpired() {
+        String expiryTimeStamp = ZonedDateTime
+                .now(ZoneId.of("UTC"))
+                .minusDays(UCCConstants.EXPIRY_LENGTH_DAYS)
+                .format(batchDeleteExpiredDTF);
+
+        this.repository.batchDeleteExpired(expiryTimeStamp);
     }
 
 }
