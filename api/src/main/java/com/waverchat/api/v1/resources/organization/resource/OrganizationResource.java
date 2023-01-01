@@ -7,13 +7,11 @@ import com.waverchat.api.v1.framework.AbstractResource;
 import com.waverchat.api.v1.resources.organization.dto.request.OrgCreateRQ;
 import com.waverchat.api.v1.resources.organization.entity.Organization;
 import com.waverchat.api.v1.resources.organization.service.OrganizationService;
+import com.waverchat.api.v1.resources.organizationmember.service.OrganizationMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,12 +22,12 @@ import static com.waverchat.api.v1.util.Constants.BASE_URL;
 public class OrganizationResource extends AbstractResource {
 
     @Autowired
-    public OrganizationService organizationService;
+    private OrganizationService organizationService;
 
     @PostMapping
     public ResponseEntity create(@RequestBody OrgCreateRQ createRQ, HttpServletRequest request)
             throws ValidationException, ConflictException, NotFoundException {
-        Long requestingUserId = extractRequestingUserId(request);
+        Long requestingUserId = this.authContext.getRequestingUserId();
 
         Organization organization = createRQ.toEntity();
 

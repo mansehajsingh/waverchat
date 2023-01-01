@@ -61,7 +61,7 @@ public class UserResource extends AbstractResource {
     )
             throws NotFoundException, ForbiddenException, ValidationException, ConflictException
     {
-        Long requestingUserId = extractRequestingUserId(request);
+        Long requestingUserId = this.authContext.getRequestingUserId();
 
         User user = this.userService.findById(id);
 

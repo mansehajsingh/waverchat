@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,6 +16,9 @@ import java.util.Date;
 
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private AuthContext authContext;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -53,12 +57,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
-                request.setAttribute("requestingUser", Long.parseLong(claims.getSubject()));
+                authContext.setRequestingUserId(Long.parseLong(claims.getSubject()));
                 return true;
             }
         }
 
-        request.setAttribute("requestingUser", AuthUtils.Enumerables.ANONYMOUS_USER);
         return true;
     }
 
